@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="#FFFFFF"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="2560">
+
+    <LinearLayout
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="300"
+        android:paddingTop="10dp">
+
+        <TextView
+            android:text="글쓰기"
+            android:textColor="#000000"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16dp"
+            android:textAlignment="center"
+            android:gravity="center_horizontal" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1600"
+        android:background="#ffffff"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:orientation="vertical"
+        android:weightSum="1960">
+
+        <LinearLayout
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="10sp"
+            android:layout_marginTop="15sp"
+            android:layout_weight="180"
+            android:weightSum="1440">
+
+            <EditText
+                android:id="@+id/InputTitle"
+                android:layout_width="0dp"
+                android:layout_height="40sp"
+                android:layout_weight="1300"
+                android:background="#ffffff"
+                android:hint="제목"
+                android:maxLength="10"
+                android:paddingLeft="10dp"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="10sp"
+            android:layout_marginTop="15sp"
+            android:layout_weight="180"
+            android:weightSum="1440">
+
+            <EditText
+                android:id="@+id/InputStart"
+                android:hint="출발지"
+                android:paddingLeft="10dp"
+                android:layout_width="0dp"
+                android:layout_height="40sp"
+                android:layout_weight="1300"
+                android:textSize="15sp"
+                android:background="#ffffff"
+                android:maxLength="10"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="10sp"
+            android:layout_weight="180"
+            android:weightSum="1440">
+
+            <EditText
+                android:id="@+id/InputEnd"
+                android:hint="도착지"
+                android:paddingLeft="10dp"
+                android:layout_width="0dp"
+                android:layout_height="35dp"
+                android:layout_weight="1300"
+                android:textSize="15dp"
+                android:background="#ffffff"
+                android:maxLength="10"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="10sp"
+            android:layout_weight="180"
+            android:weightSum="1440">
+
+            <EditText
+                android:id="@+id/InputCash"
+                android:hint="가격"
+                android:paddingLeft="10dp"
+                android:layout_width="0dp"
+                android:layout_height="35dp"
+                android:layout_weight="1300"
+                android:textSize="15dp"
+                android:background="#ffffff"
+                android:maxLength="10"/>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="50sp"
+            android:layout_weight="180"
+            android:weightSum="1440">
+
+            <EditText
+                android:id="@+id/InputContent"
+                android:hint="심부름 내용을 간략히 적으세요"
+                android:paddingLeft="10dp"
+                android:layout_width="0dp"
+                android:layout_height="80sp"
+                android:layout_weight="1300"
+                android:textSize="15dp"
+                android:background="#ffffff"
+                android:maxLength="50"/>
+
+        </LinearLayout>
+
+    </LinearLayout> <!-- weightSum 12 끝 -->
+
+    <LinearLayout
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="300"
+        android:weightSum="900">
+
+        <Button
+            android:id="@+id/Writebtn"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_weight="800"
+            android:background="#ffffff"
+            android:text="등록하기" />
+    </LinearLayout>
+</LinearLayout>

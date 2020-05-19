@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "267819563208",
+    "firebase_url": "https://errands-2b8d4.firebaseio.com",
+    "project_id": "errands-2b8d4",
+    "storage_bucket": "errands-2b8d4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:267819563208:android:ede9feee5cd07e5e61cdfd",
+        "android_client_info": {
+          "package_name": "com.dasong.errands"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "267819563208-q09a7eiromg8v2k7ucet8v8q6cr7rist.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dasong.errands",
+            "certificate_hash": "a2b2290dda23137cba3814a94883b83d43fdf98b"
+          }
+        },
+        {
+          "client_id": "267819563208-fqs4rs57823rs10mbceobqellc6v4u82.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABd71H6kxeDgpDUUp6hKDsoWXVOoCA2hU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "267819563208-fqs4rs57823rs10mbceobqellc6v4u82.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

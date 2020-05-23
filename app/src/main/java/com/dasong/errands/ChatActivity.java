@@ -1,6 +1,7 @@
 package com.dasong.errands;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -8,19 +9,28 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ScrollView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
+
+import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -34,8 +44,10 @@ public class ChatActivity extends AppCompatActivity {
     private String name, chat_msg, chat_user,user_email;
     private DatabaseReference reference = FirebaseDatabase.getInstance()
             .getReference().child("message");
-
-
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    String user_id = user.getUid();
+    String tname;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +63,24 @@ public class ChatActivity extends AppCompatActivity {
 
         name = "Guest " + new Random().nextInt(1000);
 
+        db.collection("users").document(user_id)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                //닉네임 받아오기
+                                tname = document.getString("NickName");
+                            } else {
+                                Log.d(TAG, "No such document");
+                            }
+                        } else {
+                            Log.d(TAG, "get failed with ", task.getException());
+                        }
+                    }
+                });
         Bundle b = getIntent().getExtras();
         user_email = b.getString("useremail");
         button.setOnClickListener(new View.OnClickListener() {
@@ -65,7 +95,7 @@ public class ChatActivity extends AppCompatActivity {
 
                 Map<String, Object> objectMap = new HashMap<String, Object>();
 
-                objectMap.put("name", user_email);
+                objectMap.put("name", tname);
                 objectMap.put("text", editText.getText().toString());
 
 

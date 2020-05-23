@@ -5,22 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.dasong.errands.ChatActivity">
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="8dp"
-        tools:context=".PlaceDetailActivity"
-        android:fillViewport="true"
-        >
+
     <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/layout"/>
-    </ScrollView>
+
 
     <LinearLayout
         android:layout_alignParentBottom="true"

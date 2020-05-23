@@ -94,6 +94,8 @@ public class List_Activity extends Activity{
 
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                                 m_arr.add(new List_Item(document.getString("ttitle"), document.getString("tname"), document.getLong("tdate"), document.getString("tstart"), document.getString("tarrive"), document.getString("tdetail"), document.getString("tprice")));
+                                System.out.println(m_arr);
+
                             }
 
                         } else {

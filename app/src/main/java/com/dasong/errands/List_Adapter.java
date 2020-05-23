@@ -53,7 +53,7 @@ public class List_Adapter extends BaseAdapter{
         LinearLayout layout_view =  (LinearLayout)convertView.findViewById(R.id.vi_view);
 
         Button ok = (Button)convertView.findViewById(R.id.item_ok);
-        Button delete = (Button) convertView.findViewById(R.id.item_delete);
+        Button btn_detail = (Button) convertView.findViewById(R.id.item_detail);
 
         mtitle.setText(arr.get(position).Title);
         mstart.setText(arr.get(position).Start);
@@ -61,6 +61,8 @@ public class List_Adapter extends BaseAdapter{
         mdate.setText(formatTimeString(arr.get(position).Date));
         mwriter.setText(arr.get(position).Writer);
         //mdetail.setText(arr.get(position).Detail);
+        System.out.println(arr.get(position).Detail);
+        System.out.println(arr.get(position).Price);
         mprice.setText(arr.get(position).Price);
         //mprice.setText(String.valueOf(arr.get(position).Price));
 
@@ -74,10 +76,16 @@ public class List_Adapter extends BaseAdapter{
                 // Toast.makeText(this, "수락되었습니다.", Toast.LENGTH_SHORT).show();
             }
         });
+        btn_detail.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                GoIntent(position);
+                // Toast.makeText(this, "수락되었습니다.", Toast.LENGTH_SHORT).show();
+            }
+        });
         return convertView;
     }
     public void GoIntent(int a){
-        Intent intent = new Intent(m_activity, MainActivity.class);
+        Intent intent = new Intent(m_activity, BoarderDetailActivity.class);
         //putExtra 로 선택한 아이템의 정보를 인텐트로 넘겨 줄 수 있다.
         intent.putExtra("TITLE", arr.get(a).Title);
         intent.putExtra("START", arr.get(a).Start);

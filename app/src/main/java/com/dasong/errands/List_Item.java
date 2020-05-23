@@ -1,5 +1,7 @@
 package com.dasong.errands;
 
+import java.util.Date;
+
 public class List_Item {
     public int Num;
     public String Title;
@@ -9,6 +11,10 @@ public class List_Item {
     public long Date;
     public String Writer;
     public String Price;
+
+    public List_Item() {
+
+    }
 
     public List_Item(String title, String name, long date, String start, String arrive, String detail, String price){
         Num = Num;

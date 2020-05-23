@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.dasong.errands">
+<!--permission-->
+    <uses-permission android:name="android.permission.INTERNET">
+    </uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION">
+    </uses-permission>
 
     <application
         android:allowBackup="true"
@@ -21,6 +26,8 @@
         <activity android:name=".ChatActivity"/>
         <activity android:name=".List_Activity"/>
         <activity android:name=".List_Write"/>
+        <activity android:name=".BoarderDetailActivity"/>
+        <meta-data android:name="com.kakao.sdk.AppKey" android:value="ef71ea331240daa474716c1318470fd3"/>
     </application>
 
 </manifest>

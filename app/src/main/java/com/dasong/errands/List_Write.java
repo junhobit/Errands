@@ -46,6 +46,7 @@ public class List_Write extends Activity implements View.OnClickListener {
 
     //private ServiceApi service;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
+
     private DatabaseReference reference = database.getReference();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -109,6 +110,9 @@ public class List_Write extends Activity implements View.OnClickListener {
                     user.put("tprice", tprice);
                     user.put("tdate", curtime);
                     user.put("tcontent", tcontent);
+                    user.put("count",Integer.toString(tcount));
+                    user.put("ok",0);
+                    user.put("ok_name",null);
 
                     // Add a new document with a generated ID
                     db.collection("board").document(user_id + tcount)

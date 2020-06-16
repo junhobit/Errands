@@ -75,6 +75,7 @@ android:orientation="vertical" >
                     android:textColor="#000000"
                     android:textSize="13sp"
                     />
+
             </LinearLayout>
         </LinearLayout>
         <LinearLayout
@@ -85,19 +86,28 @@ android:orientation="vertical" >
             <Button
                 android:id="@+id/item_ok"
                 android:layout_width="wrap_content"
-                android:layout_height="35dp"
+                android:layout_height="20dp"
                 android:text="수락"
                 android:textColor="#000000"
-                android:textSize="10sp"
+                android:textSize="5sp"
                 android:textStyle="bold"
                 />
             <Button
                 android:id="@+id/item_detail"
                 android:layout_width="wrap_content"
-                android:layout_height="35dp"
+                android:layout_height="20dp"
                 android:text="상세정보"
                 android:textColor="#000000"
-                android:textSize="10sp"
+                android:textSize="5sp"
+                />
+            <Button
+                android:id="@+id/item_delete"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:text="x"
+                android:background="#FF0000"
+                android:textColor="#000000"
+                android:textSize="5sp"
                 />
         </LinearLayout>
     </LinearLayout>

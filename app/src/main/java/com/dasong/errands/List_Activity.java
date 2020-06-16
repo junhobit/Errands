@@ -16,12 +16,15 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
@@ -50,6 +53,7 @@ public class List_Activity extends Activity{
             @Override
             public void onRefresh() {
                 // Your code here
+                setList();
                 Toast.makeText(getApplicationContext(), "새로고침", Toast.LENGTH_LONG).show();
                 // To keep animation for 4 seconds
                 new Handler().postDelayed(new Runnable() {
@@ -60,14 +64,22 @@ public class List_Activity extends Activity{
                 }, 3000); // Delay in millis
             }
         });
-        btn=(Button)findViewById(R.id.btn_write);
-        btn.setOnClickListener(new Button.OnClickListener() {
+        FloatingActionButton write = (FloatingActionButton) findViewById(R.id.btn_write);
+        write.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(List_Activity.this, List_Write.class);
                 startActivity(intent);
             }
         });
+        /*btn=(Button)findViewById(R.id.btn_write);
+        btn.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(List_Activity.this, List_Write.class);
+                startActivity(intent);
+            }
+        });*/
 
         init();
     }
@@ -93,7 +105,11 @@ public class List_Activity extends Activity{
                             for (QueryDocumentSnapshot document : task.getResult()) {
 
                                 Log.d(TAG, document.getId() + " => " + document.getData());
-                                m_arr.add(new List_Item(document.getString("ttitle"), document.getString("tname"), document.getLong("tdate"), document.getString("tstart"), document.getString("tarrive"), document.getString("tdetail"), document.getString("tprice")));
+                                m_arr.add(new List_Item(document.getId(),document.getString("ttitle"),
+                                        document.getString("tname"), document.getLong("tdate"),
+                                        document.getString("tstart"), document.getString("tarrive"),
+                                        document.getString("tcontent"), document.getString("tprice"),
+                                        document.getString("count")));
                                 System.out.println(m_arr);
 
                             }
@@ -101,6 +117,17 @@ public class List_Activity extends Activity{
                         } else {
                             Log.w(TAG, "Error getting documents.", task.getException());
                         }
+                        Collections.sort(m_arr, new Comparator<List_Item>() {
+                            @Override
+                            public int compare(List_Item l1, List_Item l2) {
+                                if (l1.getDate() < l2.getDate()) {
+                                    return 1;
+                                } else if (l1.getDate() > l2.getDate()) {
+                                    return -1;
+                                }
+                                return 0;
+                            }
+                        });
                         adapter = new List_Adapter(List_Activity.this, m_arr);
                         lv.setAdapter(adapter);
                         //lv.setDivider(null); 구분선을 없에고 싶으면 null 값을 set합니다.
@@ -111,6 +138,6 @@ public class List_Activity extends Activity{
     }
 
     public void listUpdate(){
-        adapter.notifyDataSetChanged();
+        this.setList();
     }
 }

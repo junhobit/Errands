@@ -100,10 +100,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-        Bundle b = getIntent().getExtras();
-        useremail = b.getString("useremail");
-        userid = b.getString("userid");
-        System.out.println(useremail);
 
 
        /* btn_chat.setOnClickListener(new View.OnClickListener() {

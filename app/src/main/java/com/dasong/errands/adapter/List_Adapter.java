@@ -34,6 +34,7 @@ import java.util.Map;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
+
 public class List_Adapter extends BaseAdapter{
     private LayoutInflater mInflater;
     private Activity m_activity;
@@ -48,6 +49,7 @@ public class List_Adapter extends BaseAdapter{
         arr = arr_item;
         mInflater = (LayoutInflater)m_activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
+
     @Override
     public int getCount() {
         return arr.size();

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+        <item android:title="board"
+            android:id="@+id/bottomNavigationBoard"
+            android:icon="@drawable/logo"/>
+        <item android:title="map"
+            android:id="@+id/bottomNavigationMap"
+            android:icon="@drawable/logo"/>
+        <item android:title="mypage"
+            android:id="@+id/bottomNavigationMypage"
+            android:icon="@drawable/logo"/>
+        <item android:title="mychat"
+            android:id="@+id/bottomNavigationMychat"
+            android:icon="@drawable/logo"/>
+
+</menu>

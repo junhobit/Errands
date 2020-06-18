@@ -21,6 +21,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="1000"
             android:text="리스트"/>
+        <Button
+            android:id="@+id/btn_map"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1000"
+            android:text="지도"/>
 
 
 </LinearLayout>

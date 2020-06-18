@@ -14,11 +14,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.dasong.errands.adapter.List_Adapter;
+import com.dasong.errands.model.List_Item;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -130,8 +131,8 @@ public class List_Activity extends Activity{
                         });
                         adapter = new List_Adapter(List_Activity.this, m_arr);
                         lv.setAdapter(adapter);
-                        //lv.setDivider(null); 구분선을 없에고 싶으면 null 값을 set합니다.
-                        lv.setDividerHeight(5);// 구분선의 굵기를 좀 더 크게 하고싶으면 숫자로 높이 지정가능.*/
+                        lv.setDivider(null);
+                        lv.setDividerHeight(10);// 구분선의 굵기를 좀 더 크게 하고싶으면 숫자로 높이 지정가능.*/
                         // Add a new document with a generated ID
                     }
                 });

@@ -32,12 +32,16 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
+import com.dasong.errands.model.List_Item;
+import com.dasong.errands.model.MapItem;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import net.daum.mf.map.api.CameraUpdateFactory;
 import net.daum.mf.map.api.MapPOIItem;
@@ -63,6 +67,7 @@ public class BoardDetailActivity extends AppCompatActivity implements MapView.Cu
     private MapPoint pstart,parrive;
     private Button btn_ok;
     private String tname;
+    private MapItem start,arrive;
     private static final int GPS_ENABLE_REQUEST_CODE = 2001;
     private static final int PERMISSIONS_REQUEST_CODE = 100;
     String[] REQUIRED_PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION};
@@ -104,9 +109,54 @@ public class BoardDetailActivity extends AppCompatActivity implements MapView.Cu
                     }
                 });
         setting();
-        getMarker(35.8468256,127.1292415,1);
-        getMarker(35.8471915,127.1383954,2);
-        getPolyLine(35.8468256,127.1292415,35.8471915,127.1383954);
+        Log.d("아이디 출력",m_arr.getID());
+
+        db.collection("board").document(m_arr.getID()).collection("start")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                start=new MapItem(document.getId(),document.getString("SearchTitle"), document.getString("SearchLat"), document.getString("SearchLng"));
+                                Log.d("start출력",start.getPosx());
+                                getMarker(document.getString("SearchLat"),document.getString("SearchLng"),document.getString("SearchTitle"),1);
+                                db.collection("board").document(m_arr.getID()).collection("arrive")
+                                        .get()
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    for (QueryDocumentSnapshot document : task.getResult()) {
+
+                                                        Log.d(TAG, document.getId() + " => " + document.getData());
+                                                        arrive=new MapItem(document.getId(),document.getString("SearchTitle"), document.getString("SearchLat"), document.getString("SearchLng"));
+                                                        Log.d("arrive출력",arrive.getPosx());
+                                                        getMarker(document.getString("SearchLat"),document.getString("SearchLng"),document.getString("SearchTitle"),2);
+                                                        getPolyLine(Double.valueOf(start.getPosx()),Double.valueOf(start.getPosy()),Double.valueOf(arrive.getPosx()),Double.valueOf(arrive.getPosy()));
+                                                    }
+
+                                                } else {
+                                                    Log.w(TAG, "Error getting documents.", task.getException());
+                                                }
+
+                                            }
+                                        });
+                            }
+
+                        } else {
+                            Log.w(TAG, "Error getting documents.", task.getException());
+                        }
+
+                    }
+                });
+
+
+
+
+
 
         if (!checkLocationServicesStatus()) {
 
@@ -190,14 +240,15 @@ public class BoardDetailActivity extends AppCompatActivity implements MapView.Cu
 
     }
 
-    private MapPoint getMarker(double latitude, double longitude,int tag) {
+
+    private MapPoint getMarker(String latitude, String longitude,String name,int tag) {
         int tagnum = 10;
-            MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(latitude, longitude);
-            MapPOIItem marker = new MapPOIItem();
+        MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(Double.valueOf(latitude), Double.valueOf(longitude));
+        MapPOIItem marker = new MapPOIItem();
             if(tag==1) {
-                marker.setItemName("심부름 출발지");
+                marker.setItemName("출발지 : "+name);
             }else {
-            marker.setItemName("심부름 도착지");
+            marker.setItemName("도착지 : "+name);
             }
             marker.setTag(tagnum++);
             marker.setMapPoint(mapPoint);
@@ -209,6 +260,7 @@ public class BoardDetailActivity extends AppCompatActivity implements MapView.Cu
     }
 
     private void getPolyLine(double startx,double starty, double arrivex, double arrivey){
+
         MapPolyline polyline = new MapPolyline();
         polyline.setTag(1000);
         polyline.setLineColor(Color.argb(128, 255, 51, 0));

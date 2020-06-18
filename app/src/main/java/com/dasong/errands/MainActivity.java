@@ -16,7 +16,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class MainActivity extends AppCompatActivity {
-    private Button btn_chat, btn_list;
+    private Button btn_chat, btn_list,btn_map;
     private String useremail, userid;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
         btn_chat=(Button)findViewById(R.id.btn_chat);
         btn_list=(Button)findViewById(R.id.btn_list);
-
+        btn_map=(Button)findViewById(R.id.btn_map);
         Bundle b = getIntent().getExtras();
         useremail = b.getString("useremail");
         userid = b.getString("userid");
@@ -44,6 +44,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(MainActivity.this, List_Activity.class);
+                //intent.putExtra("useremail",useremail);
+                //intent.putExtra("userid",userid);
+                startActivity(intent);
+            }
+        });
+
+        btn_map.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(MainActivity.this, MapActivity2.class);
                 //intent.putExtra("useremail",useremail);
                 //intent.putExtra("userid",userid);
                 startActivity(intent);

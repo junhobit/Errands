@@ -1,6 +1,7 @@
 package com.dasong.errands;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -27,6 +28,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -41,11 +43,15 @@ public class LoginActivity extends AppCompatActivity {
     Button loginBtn;
     TextView signUp;
     String loginid, loginpwd;
+    private int tcount;
     private static final String TAG = "EmailLogin";
 
     // Cloud Firestore 인스턴스를 초기화합니다.
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseUser user;
+    SharedPreferences auto;
+    SharedPreferences.Editor autoLogin;
+    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +80,22 @@ public class LoginActivity extends AppCompatActivity {
                 signIn();
             }
         });
+
+
+        auto = getSharedPreferences("auto", MODE_PRIVATE);
+
+        loginid = auto.getString("inputId",null);
+        loginpwd = auto.getString("inputPwd",null);
+
+        if(loginid !=null && loginpwd != null) {
+
+            startLogin(loginid,loginpwd);
+
+            Toast.makeText(getApplicationContext(), loginid +"님 자동로그인 입니다.", Toast.LENGTH_SHORT).show();
+
+
+        }
+
 
     }
 
@@ -136,6 +158,21 @@ public class LoginActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
                             //updateUI(user);
+
+                            auto = getSharedPreferences("auto", MODE_PRIVATE);
+                            editor = auto.edit();
+                            //editor.clear()는 auto에 들어있는 모든 정보를 기기에서 지운다
+                            editor.clear();
+                            editor.commit();
+
+
+                            auto = getSharedPreferences("auto", MODE_PRIVATE);
+                            autoLogin = auto.edit();
+                            autoLogin.putString("inputId", loginid);
+                            autoLogin.putString("inputPwd", loginpwd);
+                            //꼭 commit()을 해줘야 값이 저장됨
+                            autoLogin.commit();
+                            Toast.makeText(getApplicationContext(), loginid+"님 환영합니다.", Toast.LENGTH_SHORT).show();
                             gotonext();
                         } else {
                             // If sign in fails, display a message to the user.
@@ -164,7 +201,7 @@ public class LoginActivity extends AppCompatActivity {
                             // User DB 생성
                             setDocument();
                             // 로그인한 사용자를 받아옴
-                            gotonext();
+                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
 
                         } else {
                             // If sign in fails, display a message to the user.
@@ -187,23 +224,40 @@ public class LoginActivity extends AppCompatActivity {
         user.put("UserName", mUser.getDisplayName());
         user.put("NickName", mUser.getDisplayName());
         user.put("PhoneNumber", mUser.getPhoneNumber());
-        //user.put("BoardCount", "0");
-
-        db.collection("users")
-                .document(userUID)
-                .set(user)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
+        user.put("BoardCount", "0");
+        db.collection("users").document(userUID)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d("TAG", "DocumentSnapshot successfully written!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("TAG", "Error adding document", e);
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                //닉네임 받아오기
+                                tcount = Integer.valueOf(document.getString("BoardCount"));
+                            } else {
+                                db.collection("users")
+                                        .document(userUID)
+                                        .set(user)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Log.d("TAG", "DocumentSnapshot successfully written!");
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.w("TAG", "Error adding document", e);
+                                            }
+                                        });
+                            }
+                        } else {
+                            Log.d(TAG, "get failed with ", task.getException());
+                        }
                     }
                 });
+
     }
 
     public void gotonext(){

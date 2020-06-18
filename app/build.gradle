@@ -29,15 +29,10 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-<<<<<<< HEAD
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.navigation:navigation-fragment:2.0.0'
-    implementation 'androidx.navigation:navigation-ui:2.0.0'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
-=======
+
     implementation 'com.google.firebase:firebase-inappmessaging-display:19.0.6'
     implementation 'com.google.firebase:firebase-messaging:20.2.0'
->>>>>>> 78ee5489e040a82201c8a1b33f8341949d502f82
+
     compile files('libs/libDaumMapAndroid.jar')
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
@@ -60,10 +55,10 @@ dependencies {
 
     // realtime database
     implementation 'com.google.firebase:firebase-database:19.3.0'
-<<<<<<< HEAD
+
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
-=======
+
     implementation 'com.google.android.material:material:1.1.0'
 
 
@@ -77,8 +72,8 @@ dependencies {
     //alertdialog
     implementation 'com.crowdfire.cfalertdialog:cfalertdialog:1.1.0'
 
+
     //bottomnavigation
     implementation 'com.google.android.material:material:1.2.0-alpha01'
 
->>>>>>> 78ee5489e040a82201c8a1b33f8341949d502f82
 }

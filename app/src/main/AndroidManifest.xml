@@ -16,20 +16,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-<<<<<<< HEAD
-        <activity android:name=".JoinActivity" />
-        <activity
-            android:name=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ChatActivity" />
-        <activity android:name=".List_Activity" />
-        <activity android:name=".List_Write" />
-        <activity android:name=".BoarderDetailActivity" />
 
-        <meta-data
-            android:name="com.kakao.sdk.AppKey"
-            android:value="ef71ea331240daa474716c1318470fd3" />
-=======
         <activity android:name=".JoinActivity"/>
         <activity android:name=".MapActivity"/>
         <activity android:name=".MapActivity2"/>
@@ -41,7 +28,6 @@
         <activity android:name=".BoardDetailActivity"/>
 
         <meta-data android:name="com.kakao.sdk.AppKey" android:value="ef71ea331240daa474716c1318470fd3"/>
->>>>>>> 78ee5489e040a82201c8a1b33f8341949d502f82
     </application>
     <uses-permission android:name="android.permission.INTERNET" />
 

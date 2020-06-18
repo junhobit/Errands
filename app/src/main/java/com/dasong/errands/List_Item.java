@@ -3,7 +3,7 @@ package com.dasong.errands;
 import java.util.Date;
 
 public class List_Item {
-    public int Num;
+    public String ID;
     public String Title;
     public String Start;
     public String Arrive;
@@ -11,13 +11,14 @@ public class List_Item {
     public long Date;
     public String Writer;
     public String Price;
+    public String Count;
 
     public List_Item() {
 
     }
 
-    public List_Item(String title, String name, long date, String start, String arrive, String detail, String price){
-        Num = Num;
+    public List_Item(String id,String title, String name, long date, String start, String arrive, String detail, String price, String count){
+       ID = id;
         Title=title;
         Start=start;
         Arrive=arrive;
@@ -25,9 +26,11 @@ public class List_Item {
         Writer=name;
         Detail=detail;
         Price=price;
+        Count=count;
     }
 
-    public int getNum(){return Num;}
+    public String getID(){return ID;}
+    public void setID(String id) {ID=id;}
 
     public String getTitle() {
         return Title;
@@ -50,10 +53,11 @@ public class List_Item {
         Arrive = arrive;
     }
 
-    public String getArrive_detail() {
+    public String getDetail() {
         return Detail;
     }
-    public void setArrive_detail(String detail) {
+
+    public void setDetail(String detail) {
         Detail = detail;
     }
 
@@ -76,5 +80,11 @@ public class List_Item {
     }
     public void setPrice(String price) {
         Price = price;
+    }
+    public String getCount() {
+        return Count;
+    }
+    public void setCount(String count) {
+        Count = count;
     }
 }

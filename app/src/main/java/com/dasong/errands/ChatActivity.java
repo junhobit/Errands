@@ -1,143 +1,91 @@
 package com.dasong.errands;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.ScrollView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.dasong.errands.adapter.Chat_Adapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Random;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
-public class ChatActivity extends AppCompatActivity {
+public class ChatActivity extends Activity{
+    private Activity activity;
+    public static Context context;
+    private ArrayList<Chat_Item> m_arr;
+    private Chat_Adapter adapter;
 
-    private Button button;
-    private EditText editText;
-    private ListView listView;
-
-    private ArrayList<String> list = new ArrayList<>();
-    private ArrayAdapter<String> arrayAdapter;
-
-    private String name, chat_msg, chat_user,user_email;
-    private DatabaseReference reference = FirebaseDatabase.getInstance()
-            .getReference().child("message");
+    SwipeRefreshLayout swipeLayout;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    ListView list;
+    Button btn;
+
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    String user_id = user.getUid();
-    String tname;
+    final String user_id = user.getUid();
+
+    //private ServiceApi service;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat);
+        setContentView(R.layout.activity_chatroom);
 
-        listView = (ListView) findViewById(R.id.list);
-        button = (Button) findViewById(R.id.button);
-        editText = (EditText) findViewById(R.id.editText);
+        init();
+    }
 
-        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list);
-        listView.setAdapter(arrayAdapter);
+    public void init(){
+        list=(ListView)findViewById(R.id.chat_list);
+        setList();
+    }
 
+    private void setList(){
+        m_arr = new ArrayList<Chat_Item>();
+        ListView lv = (ListView)findViewById(R.id.listView);
 
-        name = "Guest " + new Random().nextInt(1000);
-
-        db.collection("users").document(user_id)
+        db.collection("users").document(user_id).collection("chat_list")
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        m_arr = new ArrayList<Chat_Item>();
+                        ListView lv = (ListView)findViewById(R.id.chat_list);
                         if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                //닉네임 받아오기
-                                tname = document.getString("NickName");
-                            } else {
-                                Log.d(TAG, "No such document");
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                m_arr.add(new Chat_Item(document.getId(),document.getString("board_name")));
+                                System.out.println(m_arr);
+
                             }
+
                         } else {
-                            Log.d(TAG, "get failed with ", task.getException());
+                            Log.w(TAG, "Error getting documents.", task.getException());
                         }
+
+                        adapter = new Chat_Adapter(ChatActivity.this, m_arr);
+                        lv.setAdapter(adapter);
+                        //lv.setDivider(null); 구분선을 없에고 싶으면 null 값을 set합니다.
+                        lv.setDividerHeight(5);// 구분선의 굵기를 좀 더 크게 하고싶으면 숫자로 높이 지정가능.*/
+                        // Add a new document with a generated ID
                     }
                 });
-        Bundle b = getIntent().getExtras();
-        user_email = b.getString("useremail");
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
-
-                Map<String, Object> map = new HashMap<String, Object>();
-
-                String key = reference.push().getKey();
-                reference.updateChildren(map);
-
-                DatabaseReference root = reference.child(key);
-
-                Map<String, Object> objectMap = new HashMap<String, Object>();
-
-                objectMap.put("name", tname);
-                objectMap.put("text", editText.getText().toString());
-
-
-                root.updateChildren(objectMap);
-                editText.setText("");
-            }
-        });
-
-        reference.addChildEventListener(new ChildEventListener() {
-            @Override public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                chatConversation(dataSnapshot);
-            }
-
-            @Override public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                chatConversation(dataSnapshot);
-            }
-
-            @Override public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
     }
 
-    private void chatConversation(DataSnapshot dataSnapshot) {
-        Iterator i = dataSnapshot.getChildren().iterator();
-
-        while (i.hasNext()) {
-            chat_user = (String) ((DataSnapshot) i.next()).getValue();
-            chat_msg = (String) ((DataSnapshot) i.next()).getValue();
-
-            arrayAdapter.add(chat_user + " : " + chat_msg);
-        }
-
-        arrayAdapter.notifyDataSetChanged();
+    public void listUpdate(){
+        this.setList();
     }
-
 }

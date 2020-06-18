@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+<<<<<<< HEAD
     android:id="@+id/activity_map2"
+=======
+    android:id="@+id/activity_map"
+>>>>>>> 78ee5489e040a82201c8a1b33f8341949d502f82
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="0dp"

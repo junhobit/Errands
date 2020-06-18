@@ -13,6 +13,7 @@
             android:theme="@style/AppTheme.NoActionBar"
             app:layout_anchorGravity="bottom|center">
 
+<<<<<<< HEAD
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
@@ -22,6 +23,20 @@
                     app:layout_scrollFlags="scroll"
                     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                     app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+=======
+        <Button
+            android:id="@+id/btn_list"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1000"
+            android:text="리스트"/>
+        <Button
+            android:id="@+id/btn_map"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1000"
+            android:text="지도"/>
+>>>>>>> 78ee5489e040a82201c8a1b33f8341949d502f82
 
                         <ImageView
                             android:layout_width="wrap_content"

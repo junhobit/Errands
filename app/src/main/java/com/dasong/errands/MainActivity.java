@@ -32,7 +32,11 @@ import com.google.android.material.navigation.NavigationView;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+<<<<<<< HEAD
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+=======
+public class MainActivity extends AppCompatActivity {
+>>>>>>> 78ee5489e040a82201c8a1b33f8341949d502f82
     private Button btn_chat, btn_list,btn_map;
     private String useremail, userid;
 
@@ -50,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         /*btn_chat=(Button)findViewById(R.id.btn_chat);
         btn_list=(Button)findViewById(R.id.btn_list);
+<<<<<<< HEAD
         btn_map=(Button)findViewById(R.id.btn_map);*/
 
 
@@ -97,6 +102,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
+=======
+        btn_map=(Button)findViewById(R.id.btn_map);
+>>>>>>> 78ee5489e040a82201c8a1b33f8341949d502f82
         Bundle b = getIntent().getExtras();
         useremail = b.getString("useremail");
         userid = b.getString("userid");
@@ -129,7 +137,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 //intent.putExtra("userid",userid);
                 startActivity(intent);
             }
+<<<<<<< HEAD
         });*/
+=======
+        });
+>>>>>>> 78ee5489e040a82201c8a1b33f8341949d502f82
 
         getHashKey();
     }

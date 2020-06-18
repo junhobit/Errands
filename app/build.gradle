@@ -64,4 +64,11 @@ dependencies {
 
     //alertdialog
     implementation 'com.crowdfire.cfalertdialog:cfalertdialog:1.1.0'
+<<<<<<< HEAD
+=======
+
+    //bottomnavigation
+    implementation 'com.google.android.material:material:1.2.0-alpha01'
+
+>>>>>>> 78ee5489e040a82201c8a1b33f8341949d502f82
 }

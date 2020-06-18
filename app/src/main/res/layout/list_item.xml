@@ -1,21 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-xmlns:android="http://schemas.android.com/apk/res/android"
-android:id="@+id/vi_view"
-android:layout_width="match_parent"
-android:layout_height="150dp"
-android:gravity="center"
-android:orientation="vertical" >
+<androidx.cardview.widget.CardView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="20dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
 
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffffff"
+    android:id="@+id/vi_view"
     android:orientation="vertical"
     >
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="60dp"
         android:layout_weight="1"
         android:layout_margin="10dp"
         android:background="#ffffff"
@@ -86,28 +91,30 @@ android:orientation="vertical" >
             <Button
                 android:id="@+id/item_ok"
                 android:layout_width="wrap_content"
-                android:layout_height="20dp"
+                android:layout_height="30dp"
                 android:text="수락"
+                android:background="@drawable/button_shape"
                 android:textColor="#000000"
-                android:textSize="5sp"
+                android:textSize="10sp"
                 android:textStyle="bold"
                 />
-            <Button
-                android:id="@+id/item_detail"
-                android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                android:text="상세정보"
-                android:textColor="#000000"
-                android:textSize="5sp"
-                />
+<!--            <Button-->
+<!--                android:id="@+id/item_detail"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="20dp"-->
+<!--                android:text="상세정보"-->
+<!--                android:textColor="#000000"-->
+<!--                android:textSize="5sp"-->
+<!--                />-->
             <Button
                 android:id="@+id/item_delete"
+                android:layout_marginTop="10dp"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:text="x"
-                android:background="#FF0000"
-                android:textColor="#000000"
-                android:textSize="5sp"
+                android:background="@drawable/button_shape"
+                android:textColor="#FF0000"
+                android:textSize="10sp"
                 />
         </LinearLayout>
     </LinearLayout>
@@ -159,4 +166,4 @@ android:orientation="vertical" >
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
-</LinearLayout>
+</androidx.cardview.widget.CardView>

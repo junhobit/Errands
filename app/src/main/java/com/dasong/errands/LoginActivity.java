@@ -205,12 +205,10 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
     }
-
+    //Main으로 전해주는 정보 (id, email, phonenum, nickname)
     public void gotonext(){
         user = mAuth.getCurrentUser();
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-        intent.putExtra("useremail",user.getEmail());
-        intent.putExtra("userid",user.getUid());
         startActivity(intent);
         finish();
 

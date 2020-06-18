@@ -26,6 +26,7 @@ public class List_Item {
         Detail=detail;
         Price=price;
     }
+
     public int getNum(){return Num;}
 
     public String getTitle() {

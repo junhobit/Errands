@@ -1,21 +1,16 @@
 package com.dasong.errands;
-
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -36,11 +31,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import net.daum.mf.map.api.CameraUpdateFactory;
 import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
-import net.daum.mf.map.api.MapPointBounds;
-import net.daum.mf.map.api.MapPolyline;
 import net.daum.mf.map.api.MapReverseGeoCoder;
 import net.daum.mf.map.api.MapView;
 
@@ -52,17 +44,10 @@ import java.util.Locale;
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class MapActivity extends AppCompatActivity implements MapView.CurrentLocationEventListener, MapReverseGeoCoder.ReverseGeoCodingResultListener, MapView.POIItemEventListener{
-    private MapView mMapView;
+    MapView mapView;
     private GpsTracker gpsTracker;
-    private Activity m_activity;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private TextView mstart, marrive, mprice, mcontent, mnum, mtitle;
-    private MapPoint pstart,parrive;
-    private Button btn_ok;
-    private String tname;
-    LinearLayout container;
-    private int tcount;
-    private double latitudee, longitudee;
+
     private static final int GPS_ENABLE_REQUEST_CODE = 2001;
     private static final int PERMISSIONS_REQUEST_CODE = 100;
     String[] REQUIRED_PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION};
@@ -70,17 +55,24 @@ public class MapActivity extends AppCompatActivity implements MapView.CurrentLoc
     String user_id = user.getUid();
     private ArrayList<MapItem> m_arr;
     List_Item search;
+    private String tname;
+    private int tcount;
+    private double latitudee, longitudee;
+    ViewGroup mapViewContainer;
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_map);
+        setContentView(R.layout.activity_map2);
         gpsTracker = new GpsTracker(MapActivity.this);
-        container = (LinearLayout) findViewById(R.id.map_viewcontainer);
-        mMapView = (MapView) findViewById(R.id.map_view);
-        container.addView(mMapView);
-        //mMapView.setDaumMapApiKey(MapApiConst.DAUM_MAPS_ANDROID_APP_API_KEY);
-        mMapView.setCurrentLocationEventListener(this);
-        mMapView.setPOIItemEventListener(this);
-        mMapView.setZoomLevel(3, true);
+        //MapView
+        mapView = new MapView(this);
+        mapView.setDaumMapApiKey("ef71ea331240daa474716c1318470fd3");
+        mapViewContainer = (ViewGroup) findViewById(R.id.map_view);
+        mapViewContainer.addView(mapView);
+
+        mapView.setCurrentLocationEventListener(this);
+        mapView.setPOIItemEventListener(this);
+        mapView.setZoomLevel(3, true);
         db.collection("users").document(user_id)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -131,11 +123,10 @@ public class MapActivity extends AppCompatActivity implements MapView.CurrentLoc
 
             checkRunTimePermission();
         }
-      latitudee = gpsTracker.getLatitude();
-      longitudee = gpsTracker.getLongitude();
+        latitudee = gpsTracker.getLatitude();
+        longitudee = gpsTracker.getLongitude();
 
     }
-
 
     private MapPoint getMarker(String title, String latitude, String longitude) {
         int tagnum = 10;
@@ -150,7 +141,7 @@ public class MapActivity extends AppCompatActivity implements MapView.CurrentLoc
         marker.setCustomImageAutoscale(false); // hdpi, xhdpi 등 안드로이드 플랫폼의 스케일을 사용할 경우 지도 라이브러리의 스케일 기능을 꺼줌.
         marker.setCustomImageAnchor(0.5f, 1.0f);
 
-        mMapView.addPOIItem(marker);
+        mapView.addPOIItem(marker);
 
         return mapPoint;
     }
@@ -191,8 +182,8 @@ public class MapActivity extends AppCompatActivity implements MapView.CurrentLoc
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOff);
-        mMapView.setShowCurrentLocationMarker(false);
+        mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOff);
+        mapView.setShowCurrentLocationMarker(false);
     }
 
     @Override
@@ -260,7 +251,7 @@ public class MapActivity extends AppCompatActivity implements MapView.CurrentLoc
             if (check_result) {
                 Log.d("@@@", "start");
                 //위치 값을 가져올 수 있음
-                mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
+                mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
             } else {
                 // 거부한 퍼미션이 있다면 앱을 사용할 수 없는 이유를 설명해주고 앱을 종료합니다.2 가지 경우가 있습니다.
 
@@ -295,7 +286,7 @@ public class MapActivity extends AppCompatActivity implements MapView.CurrentLoc
 
 
             // 3.  위치 값을 가져올 수 있음
-            mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
+            mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
 
 
         } else {  //2. 퍼미션 요청을 허용한 적이 없다면 퍼미션 요청이 필요합니다. 2가지 경우(3-1, 4-1)가 있습니다.
@@ -413,7 +404,7 @@ public class MapActivity extends AppCompatActivity implements MapView.CurrentLoc
                                             intent.putExtra("START",search.Start);
                                             intent.putExtra("ARRIVE",search.Arrive);
                                             intent.putExtra("PRICE",search.Price);
-                                            container.removeAllViews();
+                                            mapViewContainer.removeAllViews();
                                             startActivity(intent);
 
                                             Bundle b = getIntent().getExtras();
@@ -436,7 +427,7 @@ public class MapActivity extends AppCompatActivity implements MapView.CurrentLoc
                 }
             }
 
-    });
+        });
         builder.show();
     }
     // 길찾기 카카오맵 호출( 카카오맵앱이 없을 경우 플레이스토어 링크로 이동)

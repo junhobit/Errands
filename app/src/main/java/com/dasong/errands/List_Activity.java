@@ -58,7 +58,8 @@ public class List_Activity extends Activity{
                 Toast.makeText(getApplicationContext(), "새로고침", Toast.LENGTH_LONG).show();
                 // To keep animation for 4 seconds
                 new Handler().postDelayed(new Runnable() {
-                    @Override public void run() {
+                    @Override
+                    public void run() {
                         // Stop animation (This will be after 3 seconds)
                         swipeLayout.setRefreshing(false);
                     }
@@ -84,7 +85,6 @@ public class List_Activity extends Activity{
 
         init();
     }
-
     public void init(){
         list=(ListView)findViewById(R.id.listView);
         setList();

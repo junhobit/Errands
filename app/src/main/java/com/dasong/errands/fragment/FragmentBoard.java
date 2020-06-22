@@ -1,6 +1,7 @@
 package com.dasong.errands.fragment;
 
 import android.app.Activity;
+import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -37,10 +38,10 @@ import java.util.Comparator;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
-public class FragmentCall extends Fragment{
-    MainActivity mainActivity;
+public class FragmentBoard extends Fragment{
+    private MainActivity mainActivity;
     private Activity activity;
-    private List_Activity list_activity = new List_Activity();
+    private List_Activity list_activity;
     public static Context context;
     private ArrayList<List_Item> m_arr;
     private List_Adapter adapter;
@@ -54,23 +55,23 @@ public class FragmentCall extends Fragment{
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mainActivity = (MainActivity) getActivity();
+        activity = (Activity) context;
     }
     @Override
     public void onDetach() {
         super.onDetach();
-        mainActivity = null;
+        activity = null;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
+
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.activity_list, container, false);
-
         // Getting SwipeContainerLayout
+
         swipeLayout = v.findViewById(R.id.swipe_container);
         // Adding Listener
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -78,7 +79,7 @@ public class FragmentCall extends Fragment{
             public void onRefresh() {
                 // Your code here
                 setList();
-                Toast.makeText(getContext(), "새로고침", Toast.LENGTH_LONG).show();
+                Toast.makeText(activity, "새로고침", Toast.LENGTH_LONG).show();
                 // To keep animation for 4 seconds
                 new Handler().postDelayed(new Runnable() {
                     @Override public void run() {
@@ -92,7 +93,7 @@ public class FragmentCall extends Fragment{
         write.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getContext(), List_Write.class);
+                Intent intent = new Intent(activity, List_Write.class);
                 startActivity(intent);
             }
         });
@@ -129,14 +130,11 @@ public class FragmentCall extends Fragment{
                             int table = 1;
                             for (QueryDocumentSnapshot document : task.getResult()) {
 
-                                Log.d(TAG, document.getId() + " => " + document.getData());
                                 m_arr.add(new List_Item(document.getId(), document.getString("ttitle"),
                                         document.getString("tname"), document.getLong("tdate"),
                                         document.getString("tstart"), document.getString("tarrive"),
                                         document.getString("tcontent"), document.getString("tprice"),
                                         document.getString("count")));
-                                System.out.println(m_arr);
-
                             }
 
                         } else {
@@ -153,7 +151,7 @@ public class FragmentCall extends Fragment{
                                 return 0;
                             }
                         });
-                        adapter = new List_Adapter(list_activity, m_arr);
+                        adapter = new List_Adapter(getActivity(), m_arr);
                         lv.setAdapter(adapter);
                         lv.setDivider(null);
                         lv.setDividerHeight(10);// 구분선의 굵기를 좀 더 크게 하고싶으면 숫자로 높이 지정가능.*/

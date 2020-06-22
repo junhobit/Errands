@@ -1,6 +1,8 @@
-package com.dasong.errands;
+package com.dasong.errands.fragment;
+
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,15 +12,22 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 
 import com.crowdfire.cfalertdialog.CFAlertDialog;
+import com.dasong.errands.BoardDetailActivity;
+import com.dasong.errands.GpsTracker;
+import com.dasong.errands.MainActivity;
+import com.dasong.errands.R;
 import com.dasong.errands.model.List_Item;
 import com.dasong.errands.model.MapItem;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -41,9 +50,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import static android.content.Context.LOCATION_SERVICE;
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
-public class MapActivity2 extends AppCompatActivity implements MapView.CurrentLocationEventListener, MapReverseGeoCoder.ReverseGeoCodingResultListener, MapView.POIItemEventListener{
+public class FragmentMap extends Fragment implements MapView.CurrentLocationEventListener, MapReverseGeoCoder.ReverseGeoCodingResultListener, MapView.POIItemEventListener {
+    MainActivity mainActivity;
     MapView mapView;
     private GpsTracker gpsTracker;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -59,15 +70,27 @@ public class MapActivity2 extends AppCompatActivity implements MapView.CurrentLo
     private int tcount;
     private double latitudee, longitudee;
     ViewGroup mapViewContainer;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_map2);
-        gpsTracker = new GpsTracker(MapActivity2.this);
-        //MapView
-        mapView = new MapView(this);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mainActivity = (MainActivity) getActivity();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mainActivity = null;
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.activity_map2, container, false);
+        gpsTracker =new GpsTracker(getActivity());
+        mapView =new MapView(getActivity());
         mapView.setDaumMapApiKey("ef71ea331240daa474716c1318470fd3");
-        mapViewContainer = (ViewGroup) findViewById(R.id.map_view);
+        mapViewContainer = (ViewGroup)v.findViewById(R.id.map_view);
         mapViewContainer.addView(mapView);
 
         mapView.setCurrentLocationEventListener(this);
@@ -125,8 +148,9 @@ public class MapActivity2 extends AppCompatActivity implements MapView.CurrentLo
         }
         latitudee = gpsTracker.getLatitude();
         longitudee = gpsTracker.getLongitude();
-
+        return v;
     }
+
 
     private MapPoint getMarker(String title, String latitude, String longitude) {
         int tagnum = 10;
@@ -148,7 +172,7 @@ public class MapActivity2 extends AppCompatActivity implements MapView.CurrentLo
 
     private String getCurrentAddress(double latitude, double longitude) {
         //지오코더... GPS를 주소로 변환
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
 
         List<Address> addresses;
 
@@ -160,17 +184,17 @@ public class MapActivity2 extends AppCompatActivity implements MapView.CurrentLo
                     7);
         } catch (IOException ioException) {
             //네트워크 문제
-            Toast.makeText(this, "지오코더 서비스 사용불가", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "지오코더 서비스 사용불가", Toast.LENGTH_LONG).show();
             return "지오코더 서비스 사용불가";
         } catch (IllegalArgumentException illegalArgumentException) {
-            Toast.makeText(this, "잘못된 GPS 좌표", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "잘못된 GPS 좌표", Toast.LENGTH_LONG).show();
             return "잘못된 GPS 좌표";
 
         }
 
 
         if (addresses == null || addresses.size() == 0) {
-            Toast.makeText(this, "주소 미발견", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "주소 미발견", Toast.LENGTH_LONG).show();
             return "주소 미발견";
 
         }
@@ -180,7 +204,7 @@ public class MapActivity2 extends AppCompatActivity implements MapView.CurrentLo
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
         mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOff);
         mapView.setShowCurrentLocationMarker(false);
@@ -255,15 +279,14 @@ public class MapActivity2 extends AppCompatActivity implements MapView.CurrentLo
             } else {
                 // 거부한 퍼미션이 있다면 앱을 사용할 수 없는 이유를 설명해주고 앱을 종료합니다.2 가지 경우가 있습니다.
 
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this, REQUIRED_PERMISSIONS[0])) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), REQUIRED_PERMISSIONS[0])) {
 
-                    Toast.makeText(MapActivity2.this, "퍼미션이 거부되었습니다. 앱을 다시 실행하여 퍼미션을 허용해주세요.", Toast.LENGTH_LONG).show();
-                    finish();
+                    Toast.makeText(getActivity(), "퍼미션이 거부되었습니다. 앱을 다시 실행하여 퍼미션을 허용해주세요.", Toast.LENGTH_LONG).show();
 
 
                 } else {
 
-                    Toast.makeText(MapActivity2.this, "퍼미션이 거부되었습니다. 설정(앱 정보)에서 퍼미션을 허용해야 합니다. ", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "퍼미션이 거부되었습니다. 설정(앱 정보)에서 퍼미션을 허용해야 합니다. ", Toast.LENGTH_LONG).show();
 
                 }
             }
@@ -275,7 +298,7 @@ public class MapActivity2 extends AppCompatActivity implements MapView.CurrentLo
 
         //런타임 퍼미션 처리
         // 1. 위치 퍼미션을 가지고 있는지 체크합니다.
-        int hasFineLocationPermission = ContextCompat.checkSelfPermission(MapActivity2.this,
+        int hasFineLocationPermission = ContextCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION);
 
 
@@ -292,19 +315,19 @@ public class MapActivity2 extends AppCompatActivity implements MapView.CurrentLo
         } else {  //2. 퍼미션 요청을 허용한 적이 없다면 퍼미션 요청이 필요합니다. 2가지 경우(3-1, 4-1)가 있습니다.
 
             // 3-1. 사용자가 퍼미션 거부를 한 적이 있는 경우에는
-            if (ActivityCompat.shouldShowRequestPermissionRationale(MapActivity2.this, REQUIRED_PERMISSIONS[0])) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), REQUIRED_PERMISSIONS[0])) {
 
                 // 3-2. 요청을 진행하기 전에 사용자가에게 퍼미션이 필요한 이유를 설명해줄 필요가 있습니다.
-                Toast.makeText(MapActivity2.this, "이 앱을 실행하려면 위치 접근 권한이 필요합니다.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "이 앱을 실행하려면 위치 접근 권한이 필요합니다.", Toast.LENGTH_LONG).show();
                 // 3-3. 사용자게에 퍼미션 요청을 합니다. 요청 결과는 onRequestPermissionResult에서 수신됩니다.
-                ActivityCompat.requestPermissions(MapActivity2.this, REQUIRED_PERMISSIONS,
+                ActivityCompat.requestPermissions(getActivity(), REQUIRED_PERMISSIONS,
                         PERMISSIONS_REQUEST_CODE);
 
 
             } else {
                 // 4-1. 사용자가 퍼미션 거부를 한 적이 없는 경우에는 퍼미션 요청을 바로 합니다.
                 // 요청 결과는 onRequestPermissionResult에서 수신됩니다.
-                ActivityCompat.requestPermissions(MapActivity2.this, REQUIRED_PERMISSIONS,
+                ActivityCompat.requestPermissions(getActivity(), REQUIRED_PERMISSIONS,
                         PERMISSIONS_REQUEST_CODE);
             }
 
@@ -316,7 +339,7 @@ public class MapActivity2 extends AppCompatActivity implements MapView.CurrentLo
     //여기부터는 GPS 활성화를 위한 메소드들
     private void showDialogForLocationServiceSetting() {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity2.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("위치 서비스 비활성화");
         builder.setMessage("앱을 사용하기 위해서는 위치 서비스가 필요합니다.\n"
                 + "위치 설정을 수정하실래요?");
@@ -340,7 +363,7 @@ public class MapActivity2 extends AppCompatActivity implements MapView.CurrentLo
 
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         switch (requestCode) {
@@ -362,7 +385,7 @@ public class MapActivity2 extends AppCompatActivity implements MapView.CurrentLo
     }
 
     public boolean checkLocationServicesStatus() {
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
 
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
                 || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
@@ -377,7 +400,7 @@ public class MapActivity2 extends AppCompatActivity implements MapView.CurrentLo
         final double lat = mapPOIItem.getMapPoint().getMapPointGeoCoord().latitude;
         final double lng = mapPOIItem.getMapPoint().getMapPointGeoCoord().longitude;
         final String location_name = mapPOIItem.getItemName();
-        CFAlertDialog.Builder builder = new CFAlertDialog.Builder(this);
+        CFAlertDialog.Builder builder = new CFAlertDialog.Builder(getActivity());
         builder.setDialogStyle(CFAlertDialog.CFAlertStyle.ALERT);
         builder.setTitle("선택해주세요");
         builder.setSingleChoiceItems(new String[]{"글 내용확인", "길찾기"}, 2, new DialogInterface.OnClickListener() {
@@ -394,7 +417,7 @@ public class MapActivity2 extends AppCompatActivity implements MapView.CurrentLo
                                         DocumentSnapshot document = task.getResult();
                                         if (document.exists()) {
                                             search=new List_Item(document.getId(),document.getString("ttitle"), document.getString("tname"), document.getLong("tdate"),  document.getString("tstart"),document.getString("tarrive"),document.getString("tdetail"),document.getString("tprice"),document.getString("tcount"));
-                                            Intent intent = new Intent(MapActivity2.this, BoardDetailActivity.class);
+                                            Intent intent = new Intent(getActivity(), BoardDetailActivity.class);
                                             //putExtra 로 선택한 아이템의 정보를 인텐트로 넘겨 줄 수 있다.
                                             intent.putExtra("TITLE", search.Title);
                                             intent.putExtra("DATE", search.Date);
@@ -407,7 +430,7 @@ public class MapActivity2 extends AppCompatActivity implements MapView.CurrentLo
                                             mapViewContainer.removeAllViews();
                                             startActivity(intent);
 
-                                            Bundle b = getIntent().getExtras();
+                                            Bundle b = getActivity().getIntent().getExtras();
                                             Log.d(TAG, "DocumentSnapshot data: " + document.getData());
                                         } else {
                                             Log.d(TAG, "No such document");
@@ -434,12 +457,12 @@ public class MapActivity2 extends AppCompatActivity implements MapView.CurrentLo
     public void showMap(Uri geoLocation) {
         Intent intent;
         try {
-            Toast.makeText(MapActivity2.this, "카카오맵으로 길찾기를 시도합니다.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "카카오맵으로 길찾기를 시도합니다.", Toast.LENGTH_LONG).show();
             intent = new Intent(Intent.ACTION_VIEW, geoLocation);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         } catch (Exception e) {
-            Toast.makeText(MapActivity2.this, "길찾기에는 카카오맵이 필요합니다. 다운받아주시길 바랍니다.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "길찾기에는 카카오맵이 필요합니다. 다운받아주시길 바랍니다.", Toast.LENGTH_LONG).show();
             intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse("https://play.google.com/store/apps/details?id=net.daum.android.map&hl=ko"));
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
@@ -465,4 +488,5 @@ public class MapActivity2 extends AppCompatActivity implements MapView.CurrentLo
 
     }
 }
+
 

@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -20,15 +21,23 @@ import androidx.annotation.NonNull;
 import com.dasong.errands.BoardDetailActivity;
 import com.dasong.errands.Chating;
 import com.dasong.errands.List_Activity;
+import com.dasong.errands.SendNotification;
 import com.dasong.errands.model.List_Item;
 import com.dasong.errands.R;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,7 +48,10 @@ public class List_Adapter extends BaseAdapter{
     private Activity m_activity;
     private ArrayList<List_Item> arr;
     private String tname;
+    private String fcmToken;
+    private String title;
     private Button btn_ok;
+
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     List_Activity list_activity = new List_Activity();
 
@@ -71,6 +83,7 @@ public class List_Adapter extends BaseAdapter{
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final String user_id = user.getUid();
+        title = arr.get(position).Title;
 
         TextView mtitle = (TextView)convertView.findViewById(R.id.item_title);
         TextView mstart = (TextView)convertView.findViewById(R.id.item_start);
@@ -97,6 +110,39 @@ public class List_Adapter extends BaseAdapter{
          *
          * 	Button btn 가 있다면, btn.setTag(position)을 활용해서 각 버튼들의 이벤트처리를 할 수 있습니다.
          */
+        db.collection("users").document(user_id)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                //닉네임 받아오기
+                                tname = document.getString("NickName");
+                            } else {
+                                Log.d(TAG, "No such document");
+                            }
+                        } else {
+                            Log.d(TAG, "get failed with ", task.getException());
+                        }
+                    }
+                });
+        db.collection("users").document(arr.get(position).ID.substring(0,28)).collection("FcmToken").document(arr.get(position).ID.substring(0,28))
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document != null) {
+                                fcmToken = (String) document.getString("fcmToken");
+                            } else {
+                                Log.w(TAG, "Error getting documents.", task.getException());
+                            }
+                        }
+                    }
+                });
         btn_ok.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 Intent intent = new Intent(m_activity, Chating.class);
@@ -135,6 +181,8 @@ public class List_Adapter extends BaseAdapter{
                                 Log.w(TAG, "Error writing document", e);
                             }
                         });
+
+                SendNotification.sendNotification(fcmToken, title, tname+"님이 수락하셨습니다.");
 
                 m_activity.startActivity(intent);
             }

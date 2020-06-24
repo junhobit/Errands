@@ -150,6 +150,8 @@ public class Chating extends AppCompatActivity {
 
         arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list);
         listView.setAdapter(arrayAdapter);
+        listView.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL); //항상 맨밑의 채팅이 보이게
+
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {

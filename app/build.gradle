@@ -76,4 +76,10 @@ dependencies {
 
     //bottomnavigation
     implementation 'com.google.android.material:material:1.2.0-alpha01'
+
+    //round imageview
+    implementation ('com.mikhaellopez:circularimageview:4.0.1')
+    {
+        exclude group: 'org.jetbrains', module: 'annotations'
+    }
 }

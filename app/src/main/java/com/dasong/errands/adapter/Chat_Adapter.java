@@ -66,7 +66,6 @@ public class Chat_Adapter extends BaseAdapter{
 
 
 
-
         mtitle.setText(arr.get(position).Title);
 
         //mprice.setText(String.valueOf(arr.get(position).Price));

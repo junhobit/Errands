@@ -61,25 +61,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        TextView textToolbar = (TextView) findViewById(R.id.textToolbar);
+        TextView txtToolbar = (TextView) findViewById(R.id.textToolbar);
 
-        db.collection("users").document(user_id)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                 textToolbar.setText(document.getString("Point"));
-                            } else {
-                                Log.d(TAG, "No such document");
-                            }
-                        } else {
-                            Log.d(TAG, "get failed with ", task.getException());
-                        }
-                    }
-                });
 
         FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
@@ -120,24 +103,29 @@ public class MainActivity extends AppCompatActivity {
         //사용자 정보 바꾸기
         //navheadermain = navigationView.getHeaderView(0); //nav_header_main 레이아웃 가져오기
 
+        String toolbarName[] = {"Errands", "채팅 목록", "주변 심부름 지도", "My Page"};
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav_view);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.boardItem: {
+                        txtToolbar.setText(toolbarName[0]);
                         mViewPager.setCurrentItem(0);
                         break;
                     }
                     case R.id.chatItem: {
+                        txtToolbar.setText(toolbarName[1]);
                         mViewPager.setCurrentItem(1);
                         break;
                     }
                     case R.id.mapItem: {
+                        txtToolbar.setText(toolbarName[2]);
                         mViewPager.setCurrentItem(2);
                         break;
                     }
                     case R.id.userItem: {
+                        txtToolbar.setText(toolbarName[3]);
                         mViewPager.setCurrentItem(3);
                         break;
                     }
@@ -160,6 +148,7 @@ public class MainActivity extends AppCompatActivity {
 
                 bottomNavigationView.getMenu().getItem(position).setChecked(true);
                 prevBottomNavigation = bottomNavigationView.getMenu().getItem(position);
+                txtToolbar.setText(toolbarName[position]);
             }
 
             @Override

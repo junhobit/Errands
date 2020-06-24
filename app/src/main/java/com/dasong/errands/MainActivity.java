@@ -20,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dasong.errands.fragment.FragmentBoard;
@@ -32,6 +33,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
@@ -40,6 +42,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
+
+import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -57,6 +61,26 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        TextView textToolbar = (TextView) findViewById(R.id.textToolbar);
+
+        db.collection("users").document(user_id)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                 textToolbar.setText(document.getString("Point"));
+                            } else {
+                                Log.d(TAG, "No such document");
+                            }
+                        } else {
+                            Log.d(TAG, "get failed with ", task.getException());
+                        }
+                    }
+                });
+
         FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                     @Override
@@ -71,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        Toolbar tb = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar tb = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(tb);
         //기본타이틀 안보여줌
         getSupportActionBar().setDisplayShowTitleEnabled(false);

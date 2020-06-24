@@ -1,17 +1,21 @@
 package com.dasong.errands;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -32,18 +36,19 @@ import java.util.Map;
 import java.util.Random;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
+import android.view.MenuItem;
 
 public class Chating extends AppCompatActivity {
 
-    private Button button;
+    private ImageButton button;
     private EditText editText;
     private ListView listView;
-    private TextView curtime;
+    private TextView curtime, chat_name;
 
     private ArrayList<String> list = new ArrayList<>();
     private ArrayAdapter<String> arrayAdapter;
 
-    private String chat_msg, chat_user, user_email, board_id;
+    private String chat_msg, chat_user, user_email, board_id, board_name, ok_name,point,gpoint,board_count;
     private long chat_date;
 
     private DatabaseReference reference;
@@ -52,18 +57,30 @@ public class Chating extends AppCompatActivity {
 
     String user_id = user.getUid();
     String tname;
+    Button btn_ok;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+
         listView = (ListView) findViewById(R.id.list);
-        button = (Button) findViewById(R.id.button);
+        button = (ImageButton) findViewById(R.id.button);
         editText = (EditText) findViewById(R.id.editText);
         curtime = (TextView)findViewById(R.id.last_time);
-
+        chat_name = (TextView)findViewById(R.id.chat_name);
+        btn_ok=(Button)findViewById(R.id.btn_ok);
         Bundle b = getIntent().getExtras();
         board_id = b.getString("board_id");
+        board_name = b.getString("board_title");
+        chat_name.setText(board_name);
+
+
 
         db.collection("users").document(user_id)
                 .get()
@@ -75,6 +92,7 @@ public class Chating extends AppCompatActivity {
                             if (document.exists()) {
                                 //닉네임 받아오기
                                 tname = document.getString("NickName");
+                                board_count=document.getString("BoardCount");
                             } else {
                                 Log.d(TAG, "No such document");
                             }
@@ -83,6 +101,49 @@ public class Chating extends AppCompatActivity {
                         }
                     }
                 });
+        db.collection("users").document(user_id).collection("chat_list").document(board_id)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                //닉네임 받아오기
+                                ok_name=document.getString("ok_name");
+                                point=document.getString("point");
+                                System.out.println("수락자"+ok_name+"점수"+point);
+                            } else {
+                                Log.d(TAG, "No such document");
+                            }
+                            db.collection("users").document(ok_name)
+                                    .get()
+                                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                DocumentSnapshot document = task.getResult();
+                                                if (document.exists()) {
+                                                    //닉네임 받아오기
+                                                    gpoint =document.getString("Point");
+                                                } else {
+                                                    Log.d(TAG, "No such document");
+                                                }
+                                            } else {
+                                                Log.d(TAG, "get failed with ", task.getException());
+                                            }
+                                        }
+                                    });
+                        } else {
+                            Log.d(TAG, "get failed with ", task.getException());
+                        }
+                    }
+                });
+
+        btn_ok.setVisibility(View.INVISIBLE);
+
+        if(user_id.equals(board_id.substring(0,28)))
+            btn_ok.setVisibility(View.VISIBLE);
 
         final DatabaseReference reference = FirebaseDatabase.getInstance()
                 .getReference().child("Chat_rooms").child(board_id);
@@ -111,6 +172,42 @@ public class Chating extends AppCompatActivity {
                 root.updateChildren(objectMap);
                 editText.setText("");
             }
+        });
+
+        btn_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                builder.setTitle("수행완료").setMessage("수행이 완료되었습니까?");
+                builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        db.collection("users").document(user_id).collection("chat_list").document(board_id).delete();
+                        db.collection("users").document(ok_name).collection("chat_list").document(board_id).delete();
+                        db.collection("board").document(board_id).delete();
+                        db.collection("chat").document(board_id).delete();
+                        System.out.println(ok_name+"수락자"+point+"점수");
+
+                        db.collection("users").document(ok_name).update("Point",Integer.toString(Integer.valueOf(gpoint)+Integer.valueOf(point)));
+                        db.collection("users").document(user_id).update("BoardCount",Integer.toString(Integer.valueOf(board_count)-1));
+
+                        finish();
+                    }
+
+                    });
+
+
+
+                builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+            }
+
         });
 
         reference.addChildEventListener(new ChildEventListener() {
@@ -167,6 +264,15 @@ public class Chating extends AppCompatActivity {
             msg = (diffTime) + "년전";
         }
         return msg;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item ){
+        switch(item.getItemId()){
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

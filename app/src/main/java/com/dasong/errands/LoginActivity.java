@@ -225,6 +225,8 @@ public class LoginActivity extends AppCompatActivity {
         user.put("NickName", mUser.getDisplayName());
         user.put("PhoneNumber", mUser.getPhoneNumber());
         user.put("BoardCount", "0");
+        user.put("Point", "0");
+
         db.collection("users").document(userUID)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {

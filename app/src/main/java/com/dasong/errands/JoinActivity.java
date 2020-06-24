@@ -209,6 +209,7 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
         user.put("NickName", muser.getNickName());
         user.put("PhoneNumber", muser.getPhoneNumber());
         user.put("BoardCount", "0");
+        user.put("Point", "0");
 
         db.collection("users")
                 .document(userUID)

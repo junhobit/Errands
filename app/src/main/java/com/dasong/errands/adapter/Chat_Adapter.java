@@ -1,11 +1,8 @@
 package com.dasong.errands.adapter;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,26 +12,15 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-
 import com.dasong.errands.ChatActivity;
-import com.dasong.errands.Chat_Item;
+import com.dasong.errands.model.Chat_Item;
 import com.dasong.errands.Chating;
 import com.dasong.errands.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
-import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class Chat_Adapter extends BaseAdapter{
     private LayoutInflater mInflater;
@@ -104,6 +90,10 @@ public class Chat_Adapter extends BaseAdapter{
         Intent intent = new Intent(m_activity, Chating.class);
         //putExtra 로 선택한 아이템의 정보를 인텐트로 넘겨 줄 수 있다.
         intent.putExtra("board_id",arr.get(a).ID);
+        intent.putExtra("board_title",arr.get(a).Title);
+        intent.putExtra("ok_name",arr.get(a).Okname);
+        intent.putExtra("point",arr.get(a).Point);
+        System.out.println(arr.get(a).ID+arr.get(a).Title+arr.get(a).Okname+arr.get(a).Point);
         m_activity.startActivity(intent);
     }
 

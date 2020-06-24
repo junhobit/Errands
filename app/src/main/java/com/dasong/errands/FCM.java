@@ -22,7 +22,7 @@ public class FCM extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-        sendNotification(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody());
+            sendNotification(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody());
     }
 
     @Override
@@ -48,6 +48,8 @@ public class FCM extends FirebaseMessagingService {
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+
 
         // Since android Oreo notification channel is needed.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

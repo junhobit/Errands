@@ -37,7 +37,8 @@
             android:hint="아이디"
             android:paddingLeft="15dp"
             android:inputType="text"
-            android:textSize="15sp" />
+            android:textSize="15sp"
+            android:fontFamily="@font/nanumsquareroundeb"/>
 
         <requestFocus />
     </LinearLayout>
@@ -48,7 +49,8 @@
         android:layout_width="match_parent"
         android:layout_height="15dp"
         android:layout_weight="160"
-        android:weightSum="1440">
+        android:weightSum="1440"
+        android:fontFamily="@font/nanumsquareroundeb">
 
 
         <EditText
@@ -79,7 +81,8 @@
             android:background="#ffffff"
             android:onClick="onClick"
             android:text="로그인"
-            android:textColor="#000000" />
+            android:textColor="#000000"
+            android:fontFamily="@font/nanumsquareroundeb"/>
 
     </LinearLayout>
 
@@ -87,7 +90,8 @@
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="10dp"
-        android:layout_weight="160">
+        android:layout_weight="160"
+        android:fontFamily="@font/nanumsquareroundeb">
 
         <TextView
             android:id="@+id/search"

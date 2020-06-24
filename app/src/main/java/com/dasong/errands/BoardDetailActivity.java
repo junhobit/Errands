@@ -21,6 +21,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -28,10 +29,12 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
+import com.dasong.errands.fragment.FragmentBoard;
 import com.dasong.errands.model.List_Item;
 import com.dasong.errands.model.MapItem;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -77,6 +80,12 @@ public class BoardDetailActivity extends AppCompatActivity implements MapView.Cu
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
         gpsTracker = new GpsTracker(BoardDetailActivity.this);
         mMapView = (MapView) findViewById(R.id.map_view);
         //mMapView.setDaumMapApiKey(MapApiConst.DAUM_MAPS_ANDROID_APP_API_KEY);
@@ -198,7 +207,7 @@ public class BoardDetailActivity extends AppCompatActivity implements MapView.Cu
 
 
 
-                Intent intent = new Intent(getApplicationContext(),List_Activity.class);
+                Intent intent = new Intent(getApplicationContext(), FragmentBoard.class);
                 PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0 , intent, PendingIntent.FLAG_UPDATE_CURRENT);
                 builder.setContentIntent(pendingIntent);
                 builder.setAutoCancel(true);
@@ -555,5 +564,14 @@ public class BoardDetailActivity extends AppCompatActivity implements MapView.Cu
     @Override
     public void onDraggablePOIItemMoved(MapView mapView, MapPOIItem mapPOIItem, MapPoint mapPoint) {
 
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item ){
+        switch(item.getItemId()){
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         applicationId "com.dasong.errands"
-        minSdkVersion 23
+        minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -73,4 +73,7 @@ dependencies {
 
     //alertdialog
     implementation 'com.crowdfire.cfalertdialog:cfalertdialog:1.1.0'
+
+    //bottomnavigation
+    implementation 'com.google.android.material:material:1.2.0-alpha01'
 }

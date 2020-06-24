@@ -1,7 +1,6 @@
 package com.dasong.errands.fragment;
 
 import android.app.Activity;
-import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,11 +18,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.dasong.errands.List_Activity;
-import com.dasong.errands.List_Write;
+import com.dasong.errands.BoardListWrite;
 import com.dasong.errands.MainActivity;
 import com.dasong.errands.R;
-import com.dasong.errands.adapter.List_Adapter;
+import com.dasong.errands.adapter.BoardList_Adapter;
 import com.dasong.errands.model.List_Item;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -41,10 +39,9 @@ import static androidx.constraintlayout.widget.Constraints.TAG;
 public class FragmentBoard extends Fragment{
     private MainActivity mainActivity;
     private Activity activity;
-    private List_Activity list_activity;
     public static Context context;
     private ArrayList<List_Item> m_arr;
-    private List_Adapter adapter;
+    private BoardList_Adapter adapter;
     private View v;
 
     SwipeRefreshLayout swipeLayout;
@@ -93,7 +90,7 @@ public class FragmentBoard extends Fragment{
         write.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(activity, List_Write.class);
+                Intent intent = new Intent(activity, BoardListWrite.class);
                 startActivity(intent);
             }
         });
@@ -108,6 +105,13 @@ public class FragmentBoard extends Fragment{
 
         init();
         return v;
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        init();
     }
 
     public void init(){
@@ -151,7 +155,7 @@ public class FragmentBoard extends Fragment{
                                 return 0;
                             }
                         });
-                        adapter = new List_Adapter(getActivity(), m_arr);
+                        adapter = new BoardList_Adapter(getActivity(), m_arr);
                         lv.setAdapter(adapter);
                         lv.setDivider(null);
                         lv.setDividerHeight(10);// 구분선의 굵기를 좀 더 크게 하고싶으면 숫자로 높이 지정가능.*/

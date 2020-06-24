@@ -15,7 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.dasong.errands.Chat_Item;
+import com.dasong.errands.model.Chat_Item;
 import com.dasong.errands.R;
 import com.dasong.errands.adapter.Chat_Adapter;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -65,6 +65,14 @@ public class FragmentChat extends Fragment {
         init();
         return v;
     }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        init();
+    }
+
     public void init(){
         list=(ListView) v.findViewById(R.id.chat_list);
         setList();

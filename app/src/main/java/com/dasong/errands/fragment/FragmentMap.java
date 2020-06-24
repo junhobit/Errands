@@ -27,7 +27,6 @@ import com.crowdfire.cfalertdialog.CFAlertDialog;
 import com.dasong.errands.BoardDetailActivity;
 import com.dasong.errands.GpsTracker;
 import com.dasong.errands.MainActivity;
-import com.dasong.errands.MapActivity2;
 import com.dasong.errands.R;
 import com.dasong.errands.model.List_Item;
 import com.dasong.errands.model.MapItem;
@@ -53,8 +52,10 @@ import java.util.Locale;
 
 import static android.content.Context.LOCATION_SERVICE;
 import static androidx.constraintlayout.widget.Constraints.TAG;
-//전체 심부름 지도
-public class FragmentCamera extends Fragment implements MapView.CurrentLocationEventListener, MapReverseGeoCoder.ReverseGeoCodingResultListener, MapView.POIItemEventListener {
+
+
+public class FragmentMap extends Fragment implements MapView.CurrentLocationEventListener, MapReverseGeoCoder.ReverseGeoCodingResultListener, MapView.POIItemEventListener
+{
     MainActivity mainActivity;
     MapView mapView;
     private GpsTracker gpsTracker;

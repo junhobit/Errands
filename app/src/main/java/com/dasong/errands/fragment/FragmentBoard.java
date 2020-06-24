@@ -39,12 +39,9 @@ import java.util.Comparator;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
-//게시물 리스트
-public class FragmentCall extends ListFragment {
-    //private MainActivity mainActivity;
-    //private Activity activity;
 
-    private List_Activity list_activity;
+public class FragmentBoard extends Fragment{
+    private Activity activity;
     public static Context context;
     private ArrayList<List_Item> m_arr;
     private List_Adapter adapter;
@@ -58,26 +55,20 @@ public class FragmentCall extends ListFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        //activity = (Activity) context;
+        activity = (Activity) context;
     }
     @Override
     public void onDetach() {
         super.onDetach();
-        //mainActivity = null;
+        activity = null;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        list_activity = new List_Activity();
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-        this.setList();
-        adapter = new List_Adapter(list_activity,m_arr);
-        setListAdapter(adapter);
-
         v = inflater.inflate(R.layout.activity_list, container, false);
         // Getting SwipeContainerLayout
 
@@ -88,7 +79,7 @@ public class FragmentCall extends ListFragment {
             public void onRefresh() {
                 // Your code here
                 setList();
-                Toast.makeText(getContext(), "새로고침", Toast.LENGTH_LONG).show();
+                Toast.makeText(activity, "새로고침", Toast.LENGTH_LONG).show();
                 // To keep animation for 4 seconds
                 new Handler().postDelayed(new Runnable() {
                     @Override public void run() {
@@ -102,7 +93,7 @@ public class FragmentCall extends ListFragment {
         write.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getContext(), List_Write.class);
+                Intent intent = new Intent(activity, List_Write.class);
                 startActivity(intent);
             }
         });
@@ -140,14 +131,11 @@ public class FragmentCall extends ListFragment {
                             int table = 1;
                             for (QueryDocumentSnapshot document : task.getResult()) {
 
-                                Log.d(TAG, document.getId() + " => " + document.getData());
                                 m_arr.add(new List_Item(document.getId(), document.getString("ttitle"),
                                         document.getString("tname"), document.getLong("tdate"),
                                         document.getString("tstart"), document.getString("tarrive"),
                                         document.getString("tcontent"), document.getString("tprice"),
                                         document.getString("count")));
-                                System.out.println(m_arr);
-
                             }
 
                         } else {
@@ -164,9 +152,8 @@ public class FragmentCall extends ListFragment {
                                 return 0;
                             }
                         });
-                        System.out.println(list_activity);
-                        // (activity, arrayList)
-                        adapter = new List_Adapter(list_activity, m_arr);
+
+                        adapter = new List_Adapter(getActivity(), m_arr);
                         lv.setAdapter(adapter);
                         lv.setDivider(null);
                         lv.setDividerHeight(10);// 구분선의 굵기를 좀 더 크게 하고싶으면 숫자로 높이 지정가능.*/

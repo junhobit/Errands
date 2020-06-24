@@ -59,14 +59,14 @@ public class List_Activity extends Activity{
                 Toast.makeText(getApplicationContext(), "새로고침", Toast.LENGTH_LONG).show();
                 // To keep animation for 4 seconds
                 new Handler().postDelayed(new Runnable() {
-                    @Override public void run() {
+                    @Override
+                    public void run() {
                         // Stop animation (This will be after 3 seconds)
                         swipeLayout.setRefreshing(false);
                     }
                 }, 3000); // Delay in millis
             }
         });
-
         FloatingActionButton write = (FloatingActionButton) findViewById(R.id.btn_write);
         //플로팅 버튼 클릭 리스너
         write.setOnClickListener(new Button.OnClickListener() {
@@ -80,7 +80,7 @@ public class List_Activity extends Activity{
         init();
     }
 
-    //listView 초기화
+    //Listview 초기화
     public void init(){
         list=(ListView)findViewById(R.id.listView);
         setList();

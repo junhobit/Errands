@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js" ></script>
+    <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js" ></script>
+</head>
+<body>
+<!-- 아임포트 자바스크립트는 jQuery 기반으로 개발되었습니다 -->
+<script type="text/javascript">
+        var IMP = window.IMP; // 생략가능
+        IMP.init('imp52596348');  // 가맹점 식별 코드
+        var money = Bridge.getMoney();
+	    var obj = {
+            pg : 'kakao', // 결제방식
+            pay_method : 'card',	// 결제 수단
+            merchant_uid : 'merchant_' + new Date().getTime(),
+            name : '주문명: 결제 테스트',	// order 테이블에 들어갈 주문명 혹은 주문 번호
+            amount : '100',	// 결제 금액
+            buyer_email : '',	// 구매자 email
+            buyer_name :  '',	// 구매자 이름
+            buyer_tel :  '',	// 구매자 전화번호
+            buyer_addr :  '',	// 구매자 주소
+            buyer_postcode :  '',	// 구매자 우편번호
+            m_redirect_url : '/khx/payEnd.action'	// 결제 완료 후 보낼 컨트롤러의 메소드명
+        }
+        obj.amount = String(money);
+	    IMP.request_pay(obj, function(rsp) {
+	        if ( rsp.success ) { // 성공시
+	            /*console.log(rsp.imp_uid);
+                console.log(rsp.merchant_uid);
+		        var msg = '결제가 완료되었습니다.';
+		        msg += '고유ID : ' + rsp.imp_uid;
+		        msg += '상점 거래ID : ' + rsp.merchant_uid;
+		        msg += '결제 금액 : ' + rsp.paid_amount;
+		        msg += '카드 승인번호 : ' + rsp.apply_num;
+
+		        alert(msg);*/
+		        Bridge.Success(rsp.paid_amount);
+	        } else { // 실패시
+		        /*var msg = '결제에 실패하였습니다.';
+		        msg += '에러내용 : ' + rsp.error_msg;
+
+		        alert(msg);*/
+		        Bridge.Fail();
+	        }
+        });
+</script>
+</body>
+</html>

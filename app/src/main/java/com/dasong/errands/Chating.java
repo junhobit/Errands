@@ -85,7 +85,7 @@ public class Chating extends AppCompatActivity {
                 });
 
         final DatabaseReference reference = FirebaseDatabase.getInstance()
-                .getReference().child(board_id);
+                .getReference().child("Chat_rooms").child(board_id);
 
         arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list);
         listView.setAdapter(arrayAdapter);

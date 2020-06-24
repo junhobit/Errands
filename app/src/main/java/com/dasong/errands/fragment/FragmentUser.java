@@ -95,8 +95,8 @@ public class FragmentUser extends Fragment {
                 });
 
 
-        //잔액충전 버튼
-        Button btnCash = (Button) v.findViewById(R.id.btn_cash);
+        //잔액충전 버튼 이벤트
+        Button btnCash = (Button) v.findViewById(R.id.btn_point);
 
         btnCash.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,6 +108,7 @@ public class FragmentUser extends Fragment {
             }
         });
 
+        //로그아웃 버튼 이벤트
         Button btnLogout = (Button) v.findViewById(R.id.btn_logout);
         btnLogout.setOnClickListener(new View.OnClickListener() {
 

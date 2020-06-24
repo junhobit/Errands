@@ -92,12 +92,20 @@
         </LinearLayout>
 
         <Button
-            android:id="@+id/btn_cash"
+            android:id="@+id/btn_point"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="match_parent"
             android:fontFamily="@font/nanumsquareroundr"
             android:layout_height="88dp"
             android:text="잔액 충전" />
+
+        <Button
+            android:id="@+id/btn_cash"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="match_parent"
+            android:fontFamily="@font/nanumsquareroundr"
+            android:layout_height="88dp"
+            android:text="포인트 현금화" />
 
         <Button
             android:id="@+id/btn_logout"

@@ -8,9 +8,11 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.dasong.errands.adapter.Chat_Adapter;
+import com.dasong.errands.model.Chat_Item;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,7 +25,7 @@ import java.util.ArrayList;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
-public class ChatActivity extends Activity{
+public class ChatActivity extends AppCompatActivity {
     private Activity activity;
     public static Context context;
     private ArrayList<Chat_Item> m_arr;
@@ -45,8 +47,16 @@ public class ChatActivity extends Activity{
         setContentView(R.layout.activity_chatroom);
 
         init();
+
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        setContentView(R.layout.activity_chatroom);
+
+        init();
+    }
     public void init(){
         list=(ListView)findViewById(R.id.chat_list);
         setList();
@@ -67,7 +77,7 @@ public class ChatActivity extends Activity{
                             for (QueryDocumentSnapshot document : task.getResult()) {
 
                                 Log.d(TAG, document.getId() + " => " + document.getData());
-                                m_arr.add(new Chat_Item(document.getId(),document.getString("board_name")));
+                                m_arr.add(new Chat_Item(document.getId(),document.getString("board_name"),document.getString("ok_name"),document.getString("point")));
                                 System.out.println(m_arr);
 
                             }
@@ -88,4 +98,5 @@ public class ChatActivity extends Activity{
     public void listUpdate(){
         this.setList();
     }
+
 }

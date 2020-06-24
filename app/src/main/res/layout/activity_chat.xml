@@ -4,15 +4,57 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.dasong.errands.Chating">
 
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorAccent"
+        android:theme="@style/AppTheme.NoActionBar">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5sp"
+            android:background="@drawable/maincolor"
+            android:splitMotionEvents="false">
+
+            <TextView
+                android:id="@+id/chat_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="채팅방 이름"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:textColor="#000000"
+                android:textSize="18sp"
+                android:fontFamily="@font/nanumsquareroundeb"
+                />
+            <Button
+                android:id="@+id/btn_ok"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:fontFamily="@font/nanumsquareroundb"
+                android:background="@drawable/button_shape"
+                android:text="수행완료"
+                />
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/layout"
+        android:layout_below="@id/appBarLayout">
     <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/layout"/>
-
-
+    </FrameLayout>
     <LinearLayout
         android:layout_alignParentBottom="true"
         android:padding="7dp"
@@ -26,15 +68,15 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:fontFamily="@font/nanumsquareroundb"
             android:hint="메세지를 입력해주세요."/>
 
-        <Button
+        <ImageButton
             android:id="@+id/button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/icon_send"
             android:text="전송"
             />
-
     </LinearLayout>
-
 </RelativeLayout>

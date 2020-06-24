@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         applicationId "com.dasong.errands"
-        minSdkVersion 23
+        minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -43,7 +43,6 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:20.2.0'
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation "androidx.coordinatorlayout:coordinatorlayout:1.1.0"
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
@@ -62,8 +61,8 @@ dependencies {
 
     // realtime database
     implementation 'com.google.firebase:firebase-database:19.3.0'
-    implementation 'com.google.android.material:material:1.0.0'
-    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation 'com.google.android.material:material:1.1.0'
+
 
     //retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.6.0'
@@ -74,8 +73,4 @@ dependencies {
 
     //alertdialog
     implementation 'com.crowdfire.cfalertdialog:cfalertdialog:1.1.0'
-
-    //bottomnavigation
-    implementation 'com.google.android.material:material:1.2.0-alpha01'
-
 }

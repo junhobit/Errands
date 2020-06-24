@@ -9,15 +9,12 @@ public class User {
     private String nickName;
     // 사용자 전화번호
     private String phoneNumber;
-    // 포인트
-    private Integer point;
 
     public User(String email, String userName, String nickName, String phoneNumber){
         this.email = email;
         this.userName = userName;
         this.nickName = nickName;
         this.phoneNumber = phoneNumber;
-        this.point = point;
     }
 
     public String getEmail() {
@@ -51,10 +48,6 @@ public class User {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
-
-    public Integer getPoint() { return point; }
-
-    public void setPoint(Integer point) { this.point = point; }
 
 }
 

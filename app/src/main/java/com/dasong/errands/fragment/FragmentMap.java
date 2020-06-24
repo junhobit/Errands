@@ -53,9 +53,7 @@ import java.util.Locale;
 import static android.content.Context.LOCATION_SERVICE;
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
-
-public class FragmentMap extends Fragment implements MapView.CurrentLocationEventListener, MapReverseGeoCoder.ReverseGeoCodingResultListener, MapView.POIItemEventListener
-{
+public class FragmentMap extends Fragment implements MapView.CurrentLocationEventListener, MapReverseGeoCoder.ReverseGeoCodingResultListener, MapView.POIItemEventListener {
     MainActivity mainActivity;
     MapView mapView;
     private GpsTracker gpsTracker;

@@ -105,7 +105,6 @@
             android:layout_width="match_parent"
             android:fontFamily="@font/nanumsquareroundr"
             android:layout_height="88dp"
-            android:onClick="onLogoutBtnClick"
             android:text="로그아웃" />
 
 

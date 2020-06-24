@@ -1,6 +1,7 @@
 package com.dasong.errands.fragment;
 
 import android.app.Activity;
+import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.ListFragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.dasong.errands.List_Activity;
@@ -37,10 +39,12 @@ import java.util.Comparator;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
-public class FragmentCall extends Fragment{
-    MainActivity mainActivity;
-    private Activity activity;
-    private List_Activity list_activity = new List_Activity();
+//게시물 리스트
+public class FragmentCall extends ListFragment {
+    //private MainActivity mainActivity;
+    //private Activity activity;
+
+    private List_Activity list_activity;
     public static Context context;
     private ArrayList<List_Item> m_arr;
     private List_Adapter adapter;
@@ -54,23 +58,29 @@ public class FragmentCall extends Fragment{
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mainActivity = (MainActivity) getActivity();
+        //activity = (Activity) context;
     }
     @Override
     public void onDetach() {
         super.onDetach();
-        mainActivity = null;
+        //mainActivity = null;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        list_activity = new List_Activity();
     }
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.activity_list, container, false);
 
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        this.setList();
+        adapter = new List_Adapter(list_activity,m_arr);
+        setListAdapter(adapter);
+
+        v = inflater.inflate(R.layout.activity_list, container, false);
         // Getting SwipeContainerLayout
+
         swipeLayout = v.findViewById(R.id.swipe_container);
         // Adding Listener
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -106,6 +116,7 @@ public class FragmentCall extends Fragment{
         });*/
 
         init();
+        System.out.println("vvvvvvvvvvv");
         return v;
     }
 
@@ -153,6 +164,8 @@ public class FragmentCall extends Fragment{
                                 return 0;
                             }
                         });
+                        System.out.println(list_activity);
+                        // (activity, arrayList)
                         adapter = new List_Adapter(list_activity, m_arr);
                         lv.setAdapter(adapter);
                         lv.setDivider(null);

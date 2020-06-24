@@ -61,8 +61,8 @@ public class List_Adapter extends BaseAdapter{
     public long getItemId(int position){
         return position;
     }
+
     //position은 arraylist에 들어갈 아이템의 위치
-    //
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         if(convertView == null){

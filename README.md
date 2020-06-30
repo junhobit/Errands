@@ -1,1 +1,7 @@
-## Man to Man ½ÉºÎ¸§ ¾îÇÃ¸®ÄÉÀÌ¼Ç
+ï»¿## Man to Man ì‹¬ë¶€ë¦„ ì–´í”Œë¦¬ì¼€ì´ì…˜
+- Android studio
+- Firebase - firestore
+- Firebase - realtime database
+- Firebase - FCM
+- Import - kakaopay api
+- Kakao map api

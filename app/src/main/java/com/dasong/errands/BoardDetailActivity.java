@@ -38,6 +38,8 @@ import com.dasong.errands.fragment.FragmentBoard;
 import com.dasong.errands.model.List_Item;
 import com.dasong.errands.model.MapItem;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -55,8 +57,10 @@ import net.daum.mf.map.api.MapReverseGeoCoder;
 import net.daum.mf.map.api.MapView;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
@@ -69,10 +73,11 @@ public class BoardDetailActivity extends AppCompatActivity implements MapView.Cu
     private TextView mstart, marrive, mprice, mcontent, mnum, mtitle;
     private MapPoint pstart,parrive;
     private Button btn_ok;
-    private String tname;
+    private String tname, board_id,board_title,board_price;
     private MapItem start,arrive;
     private static final int GPS_ENABLE_REQUEST_CODE = 2001;
     private static final int PERMISSIONS_REQUEST_CODE = 100;
+    private boolean enable;
     String[] REQUIRED_PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION};
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     String user_id = user.getUid();
@@ -80,11 +85,16 @@ public class BoardDetailActivity extends AppCompatActivity implements MapView.Cu
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-
+        enable = true;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        Bundle b = getIntent().getExtras();
+        board_id = b.getString("ID");
+        board_title = b.getString("TITLE");
+        board_price = b.getString("PRICE");
 
         gpsTracker = new GpsTracker(BoardDetailActivity.this);
         mMapView = (MapView) findViewById(R.id.map_view);
@@ -99,6 +109,25 @@ public class BoardDetailActivity extends AppCompatActivity implements MapView.Cu
         mprice = (TextView) findViewById((R.id.Cash));
         btn_ok=(Button)findViewById(R.id.btn_ok);
         m_arr=new List_Item();
+        db.collection("board").document(board_id)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                //닉네임 받아오기
+                                enable = document.getBoolean("enable");
+                                System.out.println(enable+"enable");
+                            } else {
+                                Log.d(TAG, "No such document");
+                            }
+                        } else {
+                            Log.d(TAG, "get failed with ", task.getException());
+                        }
+                    }
+                });
         db.collection("users").document(user_id)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -127,7 +156,6 @@ public class BoardDetailActivity extends AppCompatActivity implements MapView.Cu
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                                 start=new MapItem(document.getId(),document.getString("SearchTitle"), document.getString("SearchLat"), document.getString("SearchLng"));
                                 Log.d("start출력",start.getPosx());
@@ -161,20 +189,21 @@ public class BoardDetailActivity extends AppCompatActivity implements MapView.Cu
 
                     }
                 });
-
-
-
-
-
-
         if (!checkLocationServicesStatus()) {
 
             showDialogForLocationServiceSetting();
         } else {
-
             checkRunTimePermission();
         }
 
+        if(user_id.equals(m_arr.getID().substring(0,28))) {
+            btn_ok.setEnabled(false);
+        }
+        if(!enable) {
+            System.out.println("false" + " 불가능");
+            btn_ok.setEnabled(false);
+        }
+        System.out.println("true" + " 가능");
         btn_ok.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 Toast.makeText(BoardDetailActivity.this,"수락하셨습니다. 마이페이지에서 현재 상태를 확인하세요", Toast.LENGTH_SHORT).show();
@@ -182,48 +211,47 @@ public class BoardDetailActivity extends AppCompatActivity implements MapView.Cu
                 db.collection("board").document(m_arr.getID()).update("ok_name",user_id);
                 btn_ok.setEnabled(false);
 
-                NotificationManager notificationManager=(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                NotificationCompat.Builder builder= null;
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+                Map<String, Object> user = new HashMap<>();
+                user.put("board_id", board_id);
+                user.put("board_name", board_title);
+                user.put("ok_name",user_id);
+                user.put("point",board_price);
 
-                    String channelID="channel_01";
-                    String channelName="MyChannel01";
+                db.collection("users").document(user_id).collection("chat_list").document(board_id)
+                        .set(user)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            public void onSuccess(Void aVoid) {
+                                Log.d(TAG, "DocumentSnapshot successfully written!");
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w(TAG, "Error writing document", e);
+                            }
+                        });
 
-                    NotificationChannel channel= new NotificationChannel(channelID,channelName, NotificationManager.IMPORTANCE_DEFAULT);
-                    notificationManager.createNotificationChannel(channel);
-                    builder=new NotificationCompat.Builder(getApplicationContext(), channelID);
+                db.collection("users").document(board_id.substring(0,28)).collection("chat_list").document(board_id)
+                        .set(user)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            public void onSuccess(Void aVoid) {
+                                Log.d(TAG, "DocumentSnapshot successfully written!");
+                                db.collection("board").document(board_id).update("enable",false);
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w(TAG, "Error writing document", e);
+                            }
+                        });
 
-                }else{
-                    builder= new NotificationCompat.Builder(getApplicationContext(), null);
-                }
-
-                builder.setSmallIcon(R.drawable.logo);
-
-
-                builder.setContentTitle("["+m_arr.getTitle()+"]");
-                builder.setContentText("-"+tname+"님이 수락하셨습니다.");
-                Bitmap bm= BitmapFactory.decodeResource(getResources(),R.drawable.logo);
-                builder.setLargeIcon(bm);
-
-
-
-                Intent intent = new Intent(getApplicationContext(), FragmentBoard.class);
-                PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0 , intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                builder.setContentIntent(pendingIntent);
-                builder.setAutoCancel(true);
-
-//                Uri soundUri = RingtoneManager.getActualDefaultRingtoneUri(getApplicationContext(), RingtoneManager.TYPE_NOTIFICATION);
-//                soundUri =Uri.parse("android.resource://"+getPackageName()+"/"+R.raw.click);
-//                builder.setSound(soundUri);
-
-                builder.setVibrate(new long[]{0,500,0,0});
-
-                Notification notification=builder.build();
-
-                notificationManager.notify(1, notification);
-
-
-                Toast.makeText(getApplicationContext(),"수락하셨습니다.", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), Chating.class);
+                intent.putExtra("board_id",board_id);
+                intent.putExtra("board_title",board_title);
+                intent.putExtra("ok_name",user_id);
+                intent.putExtra("point",board_price);
+                startActivity(intent);
             }
         });
 

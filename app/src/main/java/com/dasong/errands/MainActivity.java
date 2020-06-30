@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
         //사용자 정보 바꾸기
         //navheadermain = navigationView.getHeaderView(0); //nav_header_main 레이아웃 가져오기
 
-        String toolbarName[] = {"Errands", "채팅 목록", "주변 심부름 지도", "My Page"};
+        String toolbarName[] = {"Errands", "채팅 목록", "심부름 지도", "My Page"};
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav_view);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override

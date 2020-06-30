@@ -25,8 +25,8 @@
 
             <com.mikhaellopez.circularimageview.CircularImageView
                 android:id="@+id/profileImage"
-                android:layout_width="140sp"
-                android:layout_height="140sp"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
                 android:layout_gravity="center"
                 android:src="@drawable/penguin"
                 android:scaleType="centerInside" />

@@ -140,10 +140,9 @@ public class Chating extends AppCompatActivity {
                     }
                 });
 
-        btn_ok.setVisibility(View.INVISIBLE);
-
-        if(user_id.equals(board_id.substring(0,28)))
-            btn_ok.setVisibility(View.VISIBLE);
+        if(!user_id.equals(board_id.substring(0,28))) {
+            btn_ok.setText("취소");
+        }
 
         final DatabaseReference reference = FirebaseDatabase.getInstance()
                 .getReference().child("Chat_rooms").child(board_id);
@@ -179,37 +178,64 @@ public class Chating extends AppCompatActivity {
         btn_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-                builder.setTitle("수행완료").setMessage("수행이 완료되었습니까?");
-                builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        db.collection("users").document(user_id).collection("chat_list").document(board_id).delete();
-                        db.collection("users").document(ok_name).collection("chat_list").document(board_id).delete();
-                        db.collection("board").document(board_id).delete();
-                        db.collection("chat").document(board_id).delete();
-                        System.out.println(ok_name+"수락자"+point+"점수");
+                if (user_id.equals(board_id.substring(0, 28))) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                    builder.setTitle("수행완료").setMessage("수행이 완료되었습니까?");
+                    builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            db.collection("users").document(user_id).collection("chat_list").document(board_id).delete();
+                            db.collection("users").document(ok_name).collection("chat_list").document(board_id).delete();
+                            db.collection("board").document(board_id).delete();
+                            reference.removeValue();
+                            System.out.println(ok_name + "수락자" + point + "점수");
 
-                        db.collection("users").document(ok_name).update("Point",Integer.toString(Integer.valueOf(gpoint)+Integer.valueOf(point)));
-                        db.collection("users").document(user_id).update("BoardCount",Integer.toString(Integer.valueOf(board_count)-1));
+                            db.collection("users").document(ok_name).update("Point", Integer.toString(Integer.valueOf(gpoint) + Integer.valueOf(point)));
+                            //db.collection("users").document(user_id).update("BoardCount", Integer.toString(Integer.valueOf(board_count) - 1));
 
-                        finish();
-                    }
+                            finish();
+                        }
 
                     });
 
 
+                    builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
 
-                builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                        }
+                    });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                }
+                else
+                {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                    builder.setTitle("취소").setMessage("취소 하시겠습니까?");
+                    builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            db.collection("users").document(board_id.substring(0,28)).collection("chat_list").document(board_id).delete();
+                            db.collection("users").document(ok_name).collection("chat_list").document(board_id).delete();
+                            db.collection("board").document(board_id).update("enable",true);
+                            reference.removeValue();
+                            System.out.println(ok_name + "수락자" + point + "점수");
 
-                    }
-                });
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
+                            finish();
+                        }
+
+                    });
+
+                    builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                }
             }
-
         });
 
         reference.addChildEventListener(new ChildEventListener() {

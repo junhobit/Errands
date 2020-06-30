@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -291,6 +292,7 @@ public class BoardListWrite extends AppCompatActivity implements View.OnClickLis
                     user.put("tprice", tprice);
                     user.put("tdate", curtime);
                     user.put("tcontent", tcontent);
+                    user.put("enable", true);
                     user.put("count",Integer.toString(tcount));
                     user.put("ok",0);
                     user.put("ok_name",null);
@@ -318,5 +320,14 @@ public class BoardListWrite extends AppCompatActivity implements View.OnClickLis
                     finish();
                 }
         }
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item ){
+        switch(item.getItemId()){
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

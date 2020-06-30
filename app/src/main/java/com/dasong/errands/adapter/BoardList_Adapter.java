@@ -43,7 +43,8 @@ public class BoardList_Adapter extends BaseAdapter{
     private ArrayList<List_Item> arr;
     private String tname, fcmToken,title;
     private Button btn_ok;
-    private int board_count;
+    private int board_count, tpoint;
+    private boolean enable = true;
     FragmentBoard fb = new FragmentBoard();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -76,6 +77,7 @@ public class BoardList_Adapter extends BaseAdapter{
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final String user_id = user.getUid();
+
         title = arr.get(position).Title;
 
         TextView mtitle = (TextView)convertView.findViewById(R.id.item_title);
@@ -113,7 +115,26 @@ public class BoardList_Adapter extends BaseAdapter{
                             if (document.exists()) {
                                 //닉네임 받아오기
                                 tname = document.getString("NickName");
+                                tpoint = Integer.valueOf(document.getString("Point"));
                                 board_count = Integer.valueOf(document.getString("BoardCount"));
+                            } else {
+                                Log.d(TAG, "No such document");
+                            }
+                        } else {
+                            Log.d(TAG, "get failed with ", task.getException());
+                        }
+                    }
+                });
+        db.collection("board").document(arr.get(position).ID)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                //닉네임 받아오기
+                                enable = document.getBoolean("enable");
                             } else {
                                 Log.d(TAG, "No such document");
                             }
@@ -182,7 +203,8 @@ public class BoardList_Adapter extends BaseAdapter{
                 intent.putExtra("board_title",arr.get(position).Title);
                 intent.putExtra("ok_name",user_id);
                 intent.putExtra("point",arr.get(position).Price);
-                System.out.println(arr.get(position).ID+arr.get(position).Title+user_id+arr.get(position).Price);
+
+                SendNotification.sendNotification(fcmToken, title,tname+"님이 수락하셨습니다.");
                 m_activity.startActivity(intent);
             }
         });
@@ -191,14 +213,17 @@ public class BoardList_Adapter extends BaseAdapter{
         layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 GoDetail(position);
             }
         });
 
         btn_delete.setVisibility(View.INVISIBLE);
 
-        if(user_id.equals(arr.get(position).ID.substring(0,28)))
+        if(user_id.equals(arr.get(position).ID.substring(0,28)) || enable == false) {
             btn_delete.setVisibility(View.VISIBLE);
+            btn_ok.setVisibility(View.INVISIBLE);
+        }
 
         btn_delete.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
@@ -208,9 +233,8 @@ public class BoardList_Adapter extends BaseAdapter{
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                         db.collection("board").document(user_id + arr.get(position).Count).delete();
-
-                        db.collection("users").document(user_id).update("Point",Integer.toString(--board_count));
-                        fb.listUpdate();
+                        //db.collection("users").document(user_id).update("BoardCount",Integer.toString(--board_count));
+                        db.collection("users").document(user_id).update("Point",Integer.toString(tpoint+ Integer.valueOf(arr.get(position).Price)));
                     }
                 });
                 builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
@@ -235,7 +259,6 @@ public class BoardList_Adapter extends BaseAdapter{
         intent.putExtra("DATE", arr.get(a).Date);
         intent.putExtra("WRITER", arr.get(a).Writer);
         intent.putExtra("Detail",arr.get(a).Detail);
-        System.out.println("GoIntent!!!!!!!!"+arr.get(a).Detail);
         intent.putExtra("PRICE",arr.get(a).Price);
         intent.putExtra("ID",arr.get(a).ID);
         m_activity.startActivity(intent);
